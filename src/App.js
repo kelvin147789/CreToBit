@@ -41,7 +41,7 @@ function App() {
         console.log("creToBit",creToBit)
         setCBT(creToBit);
         setDeployed(true);
-        setctbAddress(creToBit._address)
+        await setctbAddress(creToBit._address)
       }
   
    
@@ -58,9 +58,45 @@ function App() {
 
 
   return (
+
+
     <div className="App">
 
-      Welcom to CreToBit.
+<aside>
+  <p> CreToBit </p>
+  
+  <a href="javascript:void(0)">
+    <i class="fa fa-clone" aria-hidden="true"></i>
+   Start CreToBit
+  </a>
+
+  <a href="javascript:void(0)">
+    <i class="fa fa-star-o" aria-hidden="true"></i>
+    Contract
+  </a>
+
+  <a href="javascript:void(0)">
+    <i class="fa fa-star-o" aria-hidden="true"></i>
+    Documentation
+  </a>
+
+  <a href="javascript:void(0)">
+    <i class="fa fa-trash-o" aria-hidden="true"></i>
+    GitHub
+  </a>
+
+  <a href="javascript:void(0)">
+    <i class="fa fa-trash-o" aria-hidden="true"></i>
+    Contact Us
+  </a>
+
+</aside>
+
+<body>
+
+
+
+     <h2> Welcom to CreToBit </h2>
       <div>
 
       {account}
@@ -68,12 +104,23 @@ function App() {
       </div>
 
       <div>
+        <h3>
         CTB address : 
+        </h3>
+       
 
         <div>
         {ctbAddress}
         </div>
+        
+
+
+
+        
+
       </div>
+
+      </body>
       
     </div>
   );
