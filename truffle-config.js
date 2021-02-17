@@ -1,5 +1,5 @@
 require('dotenv').config();
-const provider = require("@truffle/hdwallet-provider");
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 const {API_URL,PRIVATE_KEY} = process.env;
 
 /**
@@ -48,7 +48,9 @@ module.exports = {
 
 
     binanceTestnet: {
-      provider : ()=> provider,
+      provider : ()=> {
+        return new HDWalletProvider(PRIVATE_KEY,API_URL)
+      },
       network_id: "97",
       gas: 1000000
     }
