@@ -1,3 +1,7 @@
+require('dotenv').config();
+const provider = require("@truffle/hdwallet-provider");
+const {API_URL,PRIVATE_KEY} = process.env;
+
 /**
  * Use this file to configure your truffle project. It's seeded with some
  * common settings for different networks and features like migrations,
@@ -25,6 +29,11 @@
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 module.exports = {
+
+
+  contracts_build_directory: "./src/abi",
+
+
   /**
    * Networks define how you connect to your ethereum client and let you set the
    * defaults web3 uses to send transactions. If you don't specify one truffle
@@ -36,6 +45,13 @@ module.exports = {
    */
 
   networks: {
+
+
+    binanceTestnet: {
+      provider : ()=> provider,
+      network_id: "97",
+      gas: 1000000
+    }
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
     // You should run a client (like ganache-cli, geth or parity) in a separate terminal
