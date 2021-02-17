@@ -2,7 +2,9 @@ import logo from './logo.svg';
 import './App.css';
 import React, { useState, useEffect, useRef } from 'react';
 import CreToBit from './abi/CreToBit.json';
-
+import { MetaMaskButton,Flex, Box, EthAddress,Loader,Select,Field} from 'rimble-ui';
+import creToBitIcon from './Media/logo.png';
+ 
 import Web3 from 'web3';
 
 function App() {
@@ -44,84 +46,102 @@ function App() {
         await setctbAddress(creToBit._address)
       }
   
-   
-  
-    
-     
-  
-      
-      
+
     }
   
     return false;
   }
 
 
+  const NavBar = (props)=> {
+
+    return (
+      <div className="navBar">
+  
+        
+        <ul>
+         
+         <div className="navBarMain">
+        
+        <span>   
+        <a href="#">  
+           <img src={creToBitIcon} alt="Lihkg Icon" className="navIcon" />  
+           
+        <h3>CreToBit</h3>
+         </a>
+        
+  
+         </span>
+
+
+         <div>
+           <h2> App</h2>
+         </div>
+       
+       
+         
+         <div>
+          <a href="#" target="_blank">
+         <h2 className="balance">Docs</h2>
+         </a>
+         </div>
+  
+        
+
+         </div>
+            <div className="navBarWallet">    
+            
+            <EthAddress address={props.account} />    
+              <MetaMaskButton    width= {0.5}onClick={props.ethEnabled,props.refreshPage}>Connect Wallet</MetaMaskButton>   
+            </div>
+  
+          
+
+        </ul>
+  
+      </div>
+    );
+    
+  }
+
   return (
 
 
     <div className="App">
 
-<aside>
-  <p> CreToBit </p>
-  
-  <a href="javascript:void(0)">
-    <i class="fa fa-clone" aria-hidden="true"></i>
-   Start CreToBit
-  </a>
+      <NavBar
+      ethEnabled={ethEnabled}
+      account={account}
+      />
 
-  <a href="javascript:void(0)">
-    <i class="fa fa-star-o" aria-hidden="true"></i>
-    Contract
-  </a>
-
-  <a href="javascript:void(0)">
-    <i class="fa fa-star-o" aria-hidden="true"></i>
-    Documentation
-  </a>
-
-  <a href="javascript:void(0)">
-    <i class="fa fa-trash-o" aria-hidden="true"></i>
-    GitHub
-  </a>
-
-  <a href="javascript:void(0)">
-    <i class="fa fa-trash-o" aria-hidden="true"></i>
-    Contact Us
-  </a>
-
-</aside>
-
-<body>
-
-
-
-     <h2> Welcom to CreToBit </h2>
-      <div>
-
-      {account}
-
+      <div class="wrapper-1">
+      <div class="typing-demo-1">
+     <h2>CTB </h2>
+      </div>
       </div>
 
-      <div>
-        <h3>
-        CTB address : 
-        </h3>
-       
-
-        <div>
-        {ctbAddress}
-        </div>
-        
-
-
-
-        
-
-      </div>
-
-      </body>
       
+
+<div class="wrapper">
+
+  
+    <div class="typing-demo">
+      Decentralized Bank Protocol.
+    </div>
+</div>
+
+
+<div class="wrap">
+  <button class="button">Launch App</button>
+</div>
+
+
+
+
+      
+      
+
+
     </div>
   );
 }
