@@ -31,7 +31,6 @@
 }
 
 .buttons {
-  
   display: flex;
   flex-direction: row;
       flex-wrap: wrap;
@@ -72,6 +71,7 @@ p {
 
 
 .buttons {
+  width: 35%;
   display: flex;
   flex-direction: row;
       flex-wrap: wrap;
@@ -298,7 +298,6 @@ a {
 
 .button {
   margin-top:7%;
-  width: 30%;
   height: 45px;
   font-family: 'Roboto', sans-serif;
   font-size: 11px;
@@ -320,4 +319,70 @@ a {
   box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
   color: #fff;
   transform: translateY(-7px);
+}
+
+.row-element {
+  display:flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 25rem;
+  flex-direction: row;
+}
+
+
+.button1 {
+  margin-top:7%;
+  height: 45px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: #000;
+  background-color: #fff;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  }
+
+.button1:hover {
+  background-color: #3B7CEF;
+  box-shadow: 0px 15px 20px rgba(59, 124, 239, 0.4);
+  color: #fff;
+  transform: translateY(-7px);
+}
+
+
+.button2 {
+  margin-top:7%;
+  height: 45px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: #000;
+  background-color: #fff;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  }
+
+.button2:hover {
+  background-color: #B13AE8;
+  box-shadow: 0px 15px 20px rgba(177, 58, 232, 0.4);
+  color: #fff;
+  transform: translateY(-7px);
+}
+
+.typing-demo-2 {
+  padding-top:3%;
+  font-family: monospace;
+  font-size: 2em;
 }

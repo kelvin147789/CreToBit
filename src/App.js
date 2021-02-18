@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import CreToBit from './abi/CreToBit.json';
 import { MetaMaskButton,Flex, Box, EthAddress,Loader,Select,Field} from 'rimble-ui';
 import creToBitIcon from './Media/logo.png';
+import {HashRouter,Route, Switch,Link} from "react-router-dom";
  
 import Web3 from 'web3';
 
@@ -19,6 +20,57 @@ function App() {
   })
 
 
+
+
+  const Home = (props) => {return(
+
+<div>
+
+<div class="wrapper-1">
+      <div class="typing-demo-1">
+     <h2>CTB </h2>
+      </div>
+      </div>
+    <div class="wrapper">
+
+  
+    <div class="typing-demo">
+      Decentralized Bank Protocol.
+    </div>
+</div>
+   
+
+    <div class="wrap">
+      <a href="#/app">
+  <button class="button">Launch App</button>
+  </a>
+</div>
+</div>
+    )
+  }
+
+  const Apps = (props) => {return (
+    <div class="typing-demo-2">
+    <h2>App Dashboard </h2>
+
+    <div class="row-element">
+
+    <div>
+  <button class="button1">Deposit</button>
+</div>
+
+<div>
+  <button class="button2">Borrow</button>
+</div>
+
+
+
+</div>
+
+</div>
+  )}
+
+ 
   
 
  
@@ -82,7 +134,9 @@ function App() {
 
 
          <div>
+           <a href="#/app">
            <h2> App</h2>
+           </a>
          </div>
        
        
@@ -113,6 +167,8 @@ function App() {
 
   return (
 
+    <HashRouter>
+
 
     <div className="App">
 
@@ -122,35 +178,35 @@ function App() {
       refreshPage={refreshPage}
       />
 
-      <div class="wrapper-1">
-      <div class="typing-demo-1">
-     <h2>CTB </h2>
-      </div>
-      </div>
+      <Switch>
+
+        <Home exact path="/"/>
+        <Apps exact path="/app"/>
+
+      </Switch>
 
       
 
-<div class="wrapper">
+     
 
-  
-    <div class="typing-demo">
-      Decentralized Bank Protocol.
+      
+
+
+
+
+
+
+
+
+
+
+
+      
+      
+
+
     </div>
-</div>
-
-
-<div class="wrap">
-  <button class="button">Launch App</button>
-</div>
-
-
-
-
-      
-      
-
-
-    </div>
+    </HashRouter>
   );
 }
 
