@@ -17,6 +17,10 @@ function App() {
   const [ctbAddress,setctbAddress] = useState();
   const [CTBbalance,setCTBbalances] = useState();
   const demicals = 1000000000000000000;
+  const [currentSymbol,setcurrentSymbol] = useState();
+
+
+  // * create function to decide asset symbol 
 
   useEffect(()=> {
     ethEnabled();
