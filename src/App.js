@@ -18,6 +18,9 @@ function App() {
     ethEnabled();
   })
 
+
+  
+
  
 
   const ethEnabled = async() => {
@@ -50,6 +53,10 @@ function App() {
     }
   
     return false;
+  }
+
+  const refreshPage = ()=> {
+    window.location.reload(false);
   }
 
 
@@ -112,6 +119,7 @@ function App() {
       <NavBar
       ethEnabled={ethEnabled}
       account={account}
+      refreshPage={refreshPage}
       />
 
       <div class="wrapper-1">
