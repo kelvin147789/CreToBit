@@ -126,7 +126,7 @@ function App() {
         <a href="#">  
            <img src={creToBitIcon} alt="Lihkg Icon" className="navIcon" />  
            
-        <h3>CreToBit</h3>
+       
          </a>
         
   
