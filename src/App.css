@@ -39,6 +39,7 @@
   width: 100%;
   height: 100%;
   margin: 0 auto;
+  
 /*   padding: 2em 0em; */
 }
 
@@ -322,16 +323,17 @@ a {
 }
 
 .row-element {
+  
   display:flex;
   align-items: center;
-  justify-content: space-around;
-  margin-top: 25rem;
+  justify-content: space-evenly;
+  padding-top: 5rem;
   flex-direction: row;
 }
 
 
 .button1 {
-  margin-top:7%;
+  margin-top:10%;
   height: 45px;
   font-family: 'Roboto', sans-serif;
   font-size: 11px;
@@ -346,6 +348,8 @@ a {
   transition: all 0.3s ease 0s;
   cursor: pointer;
   outline: none;
+  
+  margin-bottom: 5rem;
   }
 
 .button1:hover {
@@ -357,7 +361,7 @@ a {
 
 
 .button2 {
-  margin-top:7%;
+  margin-top:10%;
   height: 45px;
   font-family: 'Roboto', sans-serif;
   font-size: 11px;
@@ -372,6 +376,7 @@ a {
   transition: all 0.3s ease 0s;
   cursor: pointer;
   outline: none;
+  margin-bottom: 5rem;
   }
 
 .button2:hover {
@@ -386,3 +391,61 @@ a {
   font-family: monospace;
   font-size: 2em;
 }
+
+.ctbBalances {
+  font-size: 1rem;
+}
+
+.SpaceTop10 {
+  margin-top: 5rem;
+  letter-spacing: 0.1em;
+  color:#0CB977;
+  text-shadow: 0px 15px 20px rgba(20, 209, 137, 0.3);
+  
+
+}
+
+.typing-demo-2 {
+  width: 32ch;
+  
+  white-space: nowrap;
+  overflow: hidden;
+  
+  font-family: monospace;
+  font-size: 1.5em;
+  
+}
+
+.spacingImage{
+  padding-top:5rem;
+ 
+}
+
+.homePageTitle {
+  white-space: nowrap;
+  overflow: hidden;
+  font-family: monospace;
+  font-size: 1.5em;
+  color:#444;
+  border: 3px solid  #E88C8C; 
+  padding-bottom: 3rem;
+  
+}
+
+.inputField {
+  color:#3B7CEF;
+  
+  
+}
+
+.borrowText {
+  padding:2rem;
+  color:#3B7CEF;
+
+}
+
+.payBackText {
+  color:#B13AE8;
+  padding:2rem;
+}
+

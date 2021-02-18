@@ -18,7 +18,7 @@ contract CreToBit
   string public constant symbol = "CTB";
   uint8 public constant decimals = 18;
 
-  uint256 totalSupply_ = 1000000000000000000000;
+  uint256 totalSupply_ = 2000000000000000000;
 
   mapping (address=> uint256) public balances;
   mapping(address=> uint256) public depositedCTB;
@@ -66,7 +66,7 @@ contract CreToBit
   {
       totalSupply_ = totalSupply();
       owner = msg.sender;
-      balances[msg.sender] = 10000000000000000000;
+      balances[msg.sender] = 1000000000000000000;
       
       
   }
