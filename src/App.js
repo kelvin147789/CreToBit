@@ -73,11 +73,18 @@ function App() {
    
 
     <div class="ctbBalances">
-    You have {CTBbalance/demicals} CTB
+    You have 
+    <span class="payBackText"><b> {CTBbalance/demicals} </b></span> 
+   
+    CTB to borrow
     
     
     
     
+    </div>
+
+    <div>
+      You need x ETH to payback
     </div>
 
     <div class="row-element">
