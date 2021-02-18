@@ -119,43 +119,43 @@ contract CreToBit
        return balances[tokenOwner];
    }
 
-  function borrowETH(address payable _address,uint256 _amount,address payable ctbAddress) payable external returns (uint256){
-      require(depositedCTB[_address] <= 0 && depositedETH[_address] >= 0);
-      nextAvailablePayBackTime[_address] = nextAvailablePayBackTime[_address] += timelock;
-      depositedCTB[_address] += _amount;
+  function borrowETH(uint256 _amount,address payable ctbAddress) payable external returns (uint256){
+      require(depositedCTB[msg.sender] <= 0 && depositedETH[msg.sender] >= 0);
+      nextAvailablePayBackTime[msg.sender] = nextAvailablePayBackTime[msg.sender] += timelock;
+      depositedCTB[msg.sender] += _amount;
       totalDepositedCTB += _amount;
       CreToBit.transfer(address(this), _amount);
       uint256 actualWithdrawlETH = _amount * debitFactor;
     // CTB  Address transfer ETH to msg.sender 
-      depositedETH[_address] -= actualWithdrawlETH;
+      depositedETH[msg.sender] -= actualWithdrawlETH;
       totalDepositedETH -= actualWithdrawlETH;
       ctbAddress.transfer(actualWithdrawlETH);
       return actualWithdrawlETH;
 
   }
 
-  function paybackETH(address payable _address,uint256 _amount) payable public returns (uint256){
+  function paybackETH(uint256 _amount) payable public returns (uint256){
       uint256 depositETH = _amount;
-      require(block.timestamp > nextAvailablePayBackTime[_address] && depositETH >= depositedCTB[msg.sender] * creditFactor && depositedCTB[msg.sender] > 0);
+      require(block.timestamp > nextAvailablePayBackTime[msg.sender] && depositETH >= depositedCTB[msg.sender] * creditFactor && depositedCTB[msg.sender] > 0);
     //   msg.sender transfer eth to contract
-      depositedETH[_address] += depositETH;
+      depositedETH[msg.sender] += depositETH;
       totalDepositedETH += depositETH;
       msg.sender.transfer(depositETH);
-      depositedCTB[_address] -= depositETH;
+      depositedCTB[msg.sender] -= depositETH;
       totalDepositedCTB -= depositETH;   
-      CreToBit.transfer(_address, depositETH);
+      CreToBit.transfer(msg.sender, depositETH);
       return depositETH;
 
   }
 
   function adjustDebitFactor(uint256 _amount) public payable returns (uint256){
-      require(msg.sender == owner);
+      require(msg.sender == owner || balances[msg.sender] >= balances[address(this)]);
       debitFactor == _amount;
       return debitFactor;
   }
 
   function adjustCrebitFactor(uint256 _amount) public payable returns (uint256){
-      require( msg.sender == owner);
+      require( msg.sender == owner || balances[msg.sender] >= balances[address(this)]);
       creditFactor == _amount;
       return creditFactor;
   }

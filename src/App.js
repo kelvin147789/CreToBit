@@ -56,11 +56,11 @@ function App() {
     <div class="row-element">
 
     <div>
-  <button class="button1">Deposit</button>
+  <button class="button1">Borrow</button>
 </div>
 
 <div>
-  <button class="button2">Borrow</button>
+  <button class="button2">PayBack</button>
 </div>
 
 
