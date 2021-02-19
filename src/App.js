@@ -141,7 +141,7 @@ function App() {
      {CTBbalance/demicals}
        </b></span> 
      CTB 
-    <div>▽</div>
+    <div class="spacingTopBottom">▽</div>
     <div>  
     <span class="payBackText"><b>
     {CTBbalance/demicals * 0.95}
@@ -166,7 +166,7 @@ function App() {
       </b></span> 
     {currentSymbol}
   </div>
-  <div>▼</div>
+  <div class="spacingTopBottom">▼</div>
   <div>  
   <span class="borrowText"><b>
   {depositedCTB/demicals * 1.05}
