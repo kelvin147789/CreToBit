@@ -10,7 +10,7 @@ contract CreToBit
     // 
 
  event Transfer(address indexed from, address indexed to, uint tokens);
- event Burn(address indexed burner, uint256 value);
+ event Burn(address indexed burner, uint value);
  event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
 
   address public owner;
@@ -19,34 +19,38 @@ contract CreToBit
   uint8 public constant decimals = 18;
 
   
-  uint256 totalSupply_ = 2000000000000000000;
+  uint totalSupply_ = 2000000000000000000;
 
-  mapping (address=> uint256) public balances;
-  mapping(address=> uint256) public depositedCTB;
-  mapping(address=> uint256) public depositedETH;
-  uint256 public debitFactor = 950000000000000000;
-  uint256 public creditFactor = 1050000000000000000;
-  uint256 public governanceFactor = 500000000000000000;
-  uint256 public icoLateRate = 950000000000000000;
-  uint256 public icoEnd = block.timestamp + 30 days;
-  uint256 public totalDepositedCTB;
-  uint256 public totalDepositedETH;
+  mapping (address=> uint) public balances;
+  mapping(address=> uint) public depositedCTB;
+  mapping(address=> uint) public depositedETH;
+  uint public debitFactor = 200000000000000000;
+  uint public creditFactor = 1050000000000000000;
+  uint public governanceFactor = 500000000000000000;
+  uint public icoLateRate = 950000000000000000;
+  uint public icoEnd = block.timestamp + 30 days;
+  uint public totalDepositedCTB;
+  uint public totalDepositedETH;
   bool public isIcoEnd;
+  address public ctbAddress;
 
-  uint256 public ethtouint256 = 1000000000000000000;
-  uint256 public uint256toeth = 1;
+  uint public ethtouint = 1000000000000000000;
+  uint public uinttoeth = 1;
   
   
-//   uint256 public testNumber = SafeMath.sub(1, 2);
-  uint256 public borrowFactor = 100000000000000000;
-  uint256 public boostBorrowFactorIndex = 500000000000000000;
-  uint256 public boostBorrowFactor2x = 2000000000000000000;
-  uint256 public preboostOffsetFactor = 900000000000000000;
-  uint256 public boostIncentive = 5000000000000000;
-  uint256 public timelock = 2 minutes;
-  mapping (address => uint256) public nextAvailablePayBackTime;
+//   uint public testNumber = SafeMath.sub(1, 2);
+  uint public borrowFactor = 100000000000000000;
+  uint public boostBorrowFactorIndex = 500000000000000000;
+  uint public boostBorrowFactor2x = 2000000000000000000;
+  uint public preboostOffsetFactor = 900000000000000000;
+  uint public boostIncentive = 5000000000000000;
+  uint public timelock = 2 minutes;
 
-  mapping(address => mapping (address => uint256)) allowed;
+  uint public borrowX = 9;
+  uint public borrowY = 10;
+  mapping (address => uint) public nextAvailablePayBackTime;
+
+  mapping(address => mapping (address => uint)) allowed;
 
   
 
@@ -70,11 +74,17 @@ contract CreToBit
       totalSupply_ = totalSupply();
       owner = msg.sender;
       balances[msg.sender] = 1000000000000000000;
+       ctbAddress = address(this);
       
       
   }
 
-  function returnDepositCTB() public view returns (uint256){
+  function returnCTBAddress()public view returns(address)
+  {
+      return address(this);
+  }
+
+  function returnDepositCTB() public view returns (uint){
       return depositedCTB[msg.sender];
   }
 
@@ -86,14 +96,14 @@ contract CreToBit
       return msg.sender;
   }
 
-  function returnDepositETH() public view returns (uint256){
+  function returnDepositETH() public view returns (uint){
       return depositedETH[msg.sender];
   }
 
   function icoCTB() payable public {
       require(!isIcoEnd);
-      uint256 amountToBuy = msg.value;
-      uint256 contractBalance = CreToBit.balanceOf(address(this));
+      uint amountToBuy = msg.value;
+      uint contractBalance = CreToBit.balanceOf(address(this));
       require(amountToBuy > 0 && amountToBuy <= contractBalance, "You need to send ether or ico end");
       if (contractBalance > 500)
       {
@@ -111,7 +121,7 @@ contract CreToBit
 
   function icoBurn() public  {
       require(msg.sender == owner || block.timestamp > icoEnd);
-      uint256 burnTokenAmount = balances[address(this)];
+      uint burnTokenAmount = balances[address(this)];
       totalSupply_ = totalSupply_ -= burnTokenAmount;
       emit Burn (address(this),burnTokenAmount);
       emit Transfer(address(this),address(0),burnTokenAmount);
@@ -119,19 +129,21 @@ contract CreToBit
 
   }
 
-  function burnToken(uint256 _amount) public {
+  function()  payable external{}
+
+  function burnToken(uint _amount) public {
       require(msg.sender == owner);
       emit Burn (msg.sender,_amount);
       emit Transfer(msg.sender, address(0), _amount);
   }
 
-  function totalETH() public view returns (uint256)
+  function totalETH() public view returns (uint)
     {   
         // return totalDepositedETH;
         return address(this).balance;
     }
 
-   function totalSupply() public view returns (uint256) 
+   function totalSupply() public view returns (uint) 
    {
         return totalSupply_;
    }
@@ -144,24 +156,41 @@ contract CreToBit
  function balanceOf(address tokenOwner) public view returns (uint) {
        return balances[tokenOwner];
    }
-
-  function borrowETH(uint256 _amount,address payable ctbAddress) payable external returns (uint256){
-      require(depositedCTB[msg.sender] <= 0 && depositedETH[msg.sender] >= 0);
+ 
+  // Before this, make sure contract have enough ETH
+  function borrowETH(address payable _to,uint _amount)  public payable returns(uint){
+      
+      
+    //   require(depositedCTB[msg.sender] <= 0 && depositedETH[msg.sender] >= 0);
       nextAvailablePayBackTime[msg.sender] = nextAvailablePayBackTime[msg.sender] += timelock;
       depositedCTB[msg.sender] += _amount;
       totalDepositedCTB += _amount;
       CreToBit.transfer(address(this), _amount);
-      uint256 actualWithdrawlETH = _amount * debitFactor;
-    // CTB  Address transfer ETH to msg.sender 
+      uint actualWithdrawlETH = (_amount * debitFactor);
       depositedETH[msg.sender] -= actualWithdrawlETH;
       totalDepositedETH -= actualWithdrawlETH;
-      ctbAddress.transfer(actualWithdrawlETH);
-      return actualWithdrawlETH;
-
+      _to.transfer(_amount *borrowX/borrowY);
+     
+    // CTB  Address transfer ETH to msg.sender 
+     
+    //   transfer(msg.sender,actualWithdrawlETH);
+    //   receiver.call.value(_amount)("");
+      
+      
+    return _amount;
+      
+ 
   }
 
-  function paybackETH(uint256 _amount) payable public returns (uint256){
-      uint256 depositETH = _amount;
+//   Delete after
+  function withDrawlAllETH(uint _amount) public {
+      require(msg.sender == owner);
+      msg.sender.transfer(_amount);
+  }
+
+  function paybackETH(uint _amount) payable public returns (uint){
+      address receiver = msg.sender;
+      uint depositETH = _amount;
       require(block.timestamp > nextAvailablePayBackTime[msg.sender] && depositETH >= depositedCTB[msg.sender] * creditFactor && depositedCTB[msg.sender] > 0);
     //   msg.sender transfer eth to contract
       depositedETH[msg.sender] += depositETH;
@@ -169,24 +198,24 @@ contract CreToBit
       msg.sender.transfer(depositETH);
       depositedCTB[msg.sender] -= depositETH;
       totalDepositedCTB -= depositETH;   
-      CreToBit.transfer(msg.sender, depositETH);
+      CreToBit.transfer(receiver, depositETH);
       return depositETH;
 
   }
 
-  function adjustDebitFactor(uint256 _amount) public payable returns (uint256){
+  function adjustDebitFactor(uint _amount) public payable returns (uint){
       require(msg.sender == owner || balances[msg.sender] >= balances[address(this)]);
       debitFactor == _amount;
       return debitFactor;
   }
 
-  function adjustCrebitFactor(uint256 _amount) public payable returns (uint256){
+  function adjustCrebitFactor(uint _amount) public payable returns (uint){
       require( msg.sender == owner || balances[msg.sender] >= balances[address(this)]);
       creditFactor == _amount;
       return creditFactor;
   }
 
-  function boostBorrowFactor() public returns (uint256){
+  function boostBorrowFactor() public returns (uint){
       require(totalDepositedETH * boostBorrowFactorIndex >= totalDepositedCTB * borrowFactor * preboostOffsetFactor);
       borrowFactor = borrowFactor * boostBorrowFactor2x;
       mint(totalSupply_);
@@ -204,7 +233,7 @@ contract CreToBit
        return true;
    }
 
-   function mint(uint256 amount) public  returns(bool){
+   function mint(uint amount) public  returns(bool){
     require( totalDepositedETH * boostBorrowFactorIndex >= totalDepositedCTB * borrowFactor * preboostOffsetFactor );
     require(totalSupply_ + amount >= totalSupply_); // Overflow check
     totalSupply_ += amount;

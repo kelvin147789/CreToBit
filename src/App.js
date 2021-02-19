@@ -20,18 +20,20 @@ function App() {
   const [currentSymbol,setcurrentSymbol] = useState("ASSET");
   const [depositedCTB,setdepositedCTB] = useState(0);
   const [currentNetworkID,setcurrentNetworkID] = useState();
+  const [accounts,setAccounts] = useState();
+  
 
 
   // * create function to decide asset symbol 
 
-  const whichSymbol = async()=> {
-    
-  }
+  
 
   useEffect(()=> {
     ethEnabled();
     
   })
+
+  
 
 
   const handleChange = ()=> {
@@ -124,7 +126,7 @@ function App() {
    onChange={handleChange}
    />
    </div>
-  <button class="button1">Borrow</button>
+  <button class="button1" onClick={props.borrowETH}>Borrow</button>
   <div>
       
      <span class="borrowText"><b>
@@ -183,6 +185,7 @@ function App() {
   
       const web3js = await window.web3;
       const accounts = await web3js.eth.getAccounts();
+     
       const networkID = await web3js.eth.net.getId();
       if (networkID)
       {
@@ -260,6 +263,25 @@ function App() {
     }
 
   }
+
+
+  const consoleLogSomething = async()=> {
+    console.log("props working ")
+  }
+
+  const borrowETH = async()=> 
+  {
+    if (CTB)
+    {
+      CTB.methods.borrowETH(
+        account,(100000000000000000).toString())
+        .send(
+          {from:account}
+          )
+    }
+  }
+
+ 
 
 
   const getDepositedCTB = async()=> {
@@ -349,6 +371,9 @@ function App() {
         <Home exact path="/"/>
         <Apps  path="/app"
         depositedCTB={depositedCTB}
+        borrowETH={borrowETH}
+        // withdrawlETH={withdrawlETH}
+        
         />
 
       </Switch>
