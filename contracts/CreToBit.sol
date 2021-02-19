@@ -31,6 +31,7 @@ contract CreToBit
   uint256 public icoEnd = block.timestamp + 30 days;
   uint256 public totalDepositedCTB;
   uint256 public totalDepositedETH;
+  bool public isIcoEnd;
 
   uint256 public ethtouint256 = 1000000000000000000;
   uint256 public uint256toeth = 1;
@@ -90,6 +91,7 @@ contract CreToBit
   }
 
   function icoCTB() payable public {
+      require(!isIcoEnd);
       uint256 amountToBuy = msg.value;
       uint256 contractBalance = CreToBit.balanceOf(address(this));
       require(amountToBuy > 0 && amountToBuy <= contractBalance, "You need to send ether or ico end");
@@ -102,12 +104,18 @@ contract CreToBit
 
   }
 
+  function makeIcoEnd() public {
+      require(msg.sender == owner);
+      isIcoEnd = true;
+  }
+
   function icoBurn() public  {
       require(msg.sender == owner || block.timestamp > icoEnd);
       uint256 burnTokenAmount = balances[address(this)];
       totalSupply_ = totalSupply_ -= burnTokenAmount;
       emit Burn (address(this),burnTokenAmount);
       emit Transfer(address(this),address(0),burnTokenAmount);
+      isIcoEnd = true;
 
   }
 
