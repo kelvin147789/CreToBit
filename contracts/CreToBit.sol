@@ -18,6 +18,7 @@ contract CreToBit
   string public constant symbol = "CTB";
   uint8 public constant decimals = 18;
 
+  
   uint256 totalSupply_ = 2000000000000000000;
 
   mapping (address=> uint256) public balances;
@@ -69,6 +70,14 @@ contract CreToBit
       balances[msg.sender] = 1000000000000000000;
       
       
+  }
+
+  function returnDepositCTB() public view returns (uint256){
+      return depositedCTB[msg.sender];
+  }
+
+  function returnDepositETH() public view returns (uint256){
+      return depositedETH[msg.sender];
   }
 
   function icoCTB() payable public {

@@ -18,12 +18,19 @@ function App() {
   const [CTBbalance,setCTBbalances] = useState(0);
   const demicals = 1000000000000000000;
   const [currentSymbol,setcurrentSymbol] = useState();
+  const [depositedCTB,setdepositedCTB] = useState();
+  const [currentNetworkID,setcurrentNetworkID] = useState();
 
 
   // * create function to decide asset symbol 
 
+  const whichSymbol = async()=> {
+    
+  }
+
   useEffect(()=> {
     ethEnabled();
+    
   })
 
 
@@ -31,6 +38,8 @@ function App() {
     console.log("working")
 
   }
+
+  
 
 
 
@@ -41,7 +50,7 @@ function App() {
 
 <div class="wrapper-1">
       <div class="typing-demo-1">
-     <h2>CTB </h2>
+     <h2 class="">CTB </h2>
       </div>
       </div>
     <div class="wrapper">
@@ -49,7 +58,7 @@ function App() {
   
     <div class="typing-demo">
       Decentralized Bank Protocol.
-    </div>
+    </div> 
 </div>
    
 
@@ -108,7 +117,10 @@ function App() {
     </div>
 
     <div class="ctbBalances-1">
-      You need x Asset to payback
+      You need 
+      <span class="payBackText">{props.depositedCTB}</span>
+      
+       {currentSymbol } to payback
     </div>
 
     <div class="row-element">
@@ -134,13 +146,14 @@ function App() {
     <span class="payBackText"><b>
     {CTBbalance/demicals * 0.95}
       </b></span> 
-      BNB</div> 
+      {currentSymbol}
+      </div> 
   </div>
 </div>
 
 <div>
 <div class="center20">
-   <Input type="number" required={true} placeholder={"BNB"} 
+   <Input type="number" required={true} placeholder={currentSymbol} 
    class="inputField" width={0.45}/>
    </div>
   <button class="button2">PayBack </button>
@@ -149,14 +162,14 @@ function App() {
     <span class="payBackText"><b>
 
       {/* Get depositedCTB[msg.sender] for this  */}
-    {CTBbalance/demicals *1.05}
+    {depositedCTB/demicals *1.05}
       </b></span> 
-    BNB
+    {currentSymbol}
   </div>
   <div>▼</div>
   <div>  
   <span class="borrowText"><b>
-  {CTBbalance/demicals * 1.05}
+  {depositedCTB/demicals * 1.05}
     </b></span> 
     CTB</div>
 </div>
@@ -181,10 +194,32 @@ function App() {
       const web3js = await window.web3;
       const accounts = await web3js.eth.getAccounts();
       const networkID = await web3js.eth.net.getId();
+      if (networkID)
+      {
+        await setcurrentNetworkID(networkID)
+        console.log("Current Network ID",networkID)
+        if (networkID === 97 || 56)
+        {
+          setcurrentSymbol("BNB")
+        }
+        else if (networkID === 1 || 3 || 4)
+        {
+          setcurrentSymbol("ETH")
+        }
+
+        if (currentSymbol)
+        {
+          await console.log(currentSymbol)
+        }
+      
+      }
+     
+      
       
       setAccount(accounts[0]);  
   
       console.log("Account connected");
+      await addBlinking()
 
       const creToBitData = await CreToBit.networks[networkID];
 
@@ -197,7 +232,10 @@ function App() {
         setCBT(creToBit);
         setDeployed(true);
         await setctbAddress(creToBit._address)
-        getBalanceOfCTB()
+        await getBalanceOfCTB()
+        await getDepositedCTB()
+        
+        
         }
 
       }
@@ -206,6 +244,14 @@ function App() {
     }
   
     return false;
+  }
+
+  const addBlinking = async()=> {
+   
+      var element = document.getElementById("blink1");
+      element.classList.add("blink_me")
+      console.log("Blinking")
+    
   }
 
   const refreshPage = ()=> {
@@ -221,6 +267,18 @@ function App() {
      await setCTBbalances(balances)
      
 
+    }
+
+  }
+
+
+  const getDepositedCTB = async()=> {
+    let CTBbalances;
+    if (CTB)
+    {
+      CTBbalances =  await CTB.methods.returnDepositCTB().call()
+    setdepositedCTB(CTBbalances);
+    console.log(CTBbalances, "deposited CTB")
     }
 
   }
@@ -254,7 +312,7 @@ function App() {
          </div>
 
          <div>      
-         <h2 className="icoText">ICO</h2>
+         <h2 className="icoText" id="blink1">ICO</h2>
          </div>
        
        
@@ -299,7 +357,9 @@ function App() {
       <Switch>
 
         <Home exact path="/"/>
-        <Apps exact path="/app"/>
+        <Apps  path="/app"
+        depositedCTB={depositedCTB}
+        />
 
       </Switch>
 

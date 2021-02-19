@@ -427,7 +427,7 @@ a {
   font-family: monospace;
   font-size: 1.5em;
   color:#444;
-  border: 3px solid  #E88C8C; 
+  border: 3px solid  #FA8072; 
   padding-bottom: 3rem;
   
 }
@@ -447,6 +447,7 @@ a {
 .payBackText {
   color:#B13AE8;
   padding:2rem;
+  font-weight: bold;
 }
 
 .ctbBalances-1 {
@@ -455,6 +456,20 @@ a {
 }
 
 .icoText {
-  color: #09CD09;
+  color: #F5B041;
 }
 
+
+.blink_me {
+  animation: blinker 3s linear ;
+  }
+  
+  @keyframes blinker {
+  50% {
+  opacity: 0;
+  transform: rotate(-90deg);
+  
+  }
+
+
+  }
