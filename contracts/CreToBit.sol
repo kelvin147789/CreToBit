@@ -41,6 +41,7 @@ contract CreToBit
   uint256 public boostBorrowFactorIndex = 500000000000000000;
   uint256 public boostBorrowFactor2x = 2000000000000000000;
   uint256 public preboostOffsetFactor = 900000000000000000;
+  uint256 public boostIncentive = 5000000000000000;
   uint256 public timelock = 2 minutes;
   mapping (address => uint256) public nextAvailablePayBackTime;
 
@@ -74,6 +75,14 @@ contract CreToBit
 
   function returnDepositCTB() public view returns (uint256){
       return depositedCTB[msg.sender];
+  }
+
+  //   Transfer ownership 
+  function transferOwnership() public returns(address)
+  {
+      require(msg.sender == owner);
+      owner = msg.sender;
+      return msg.sender;
   }
 
   function returnDepositETH() public view returns (uint256){
@@ -173,6 +182,8 @@ contract CreToBit
       require(totalDepositedETH * boostBorrowFactorIndex >= totalDepositedCTB * borrowFactor * preboostOffsetFactor);
       borrowFactor = borrowFactor * boostBorrowFactor2x;
       mint(totalSupply_);
+    //   Booster get 0.5% incentive of totalSupply,to increase autonomy
+      CreToBit.transfer(msg.sender,boostIncentive);
       return totalSupply_;
   }
 

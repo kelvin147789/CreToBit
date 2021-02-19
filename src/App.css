@@ -441,7 +441,16 @@ a {
 .borrowText {
   padding:2rem;
   color:#3B7CEF;
+  font-weight: bold;
 
+}
+
+
+.borrowText-1 {
+  
+  color:#3B7CEF;
+  font-weight: bold;
+  
 }
 
 .payBackText {
@@ -450,9 +459,21 @@ a {
   font-weight: bold;
 }
 
+.payBackText-1{
+  color:#B13AE8;
+  font-weight: bold;
+}
+
 .ctbBalances-1 {
   padding-top:1rem;
   font-size: 1rem;
+}
+
+.ctbBalances-2 {
+  padding-top:1rem;
+  
+  font-size: 1rem;
+  padding-right:0.6rem;
 }
 
 .icoText {

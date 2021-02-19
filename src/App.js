@@ -105,22 +105,12 @@ function App() {
 
    
 
-    <div class="ctbBalances">
-    You have 
-    <span class="borrowText"><b> {CTBbalance/demicals} </b></span> 
-   
-    CTB to borrow
-    
-    
-    
-    
+    <div class="ctbBalances-2">
+    You have <span class="borrowText">{CTBbalance/demicals}</span>CTB to <span class="borrowText-1">BORROW</span>
     </div>
 
     <div class="ctbBalances-1">
-      You need 
-      <span class="payBackText">{props.depositedCTB}</span>
-      
-       {currentSymbol } to payback
+    You need <span class="payBackText">{props.depositedCTB}</span>{currentSymbol} to <span class="payBackText-1">PAYBACK</span>
     </div>
 
     <div class="row-element">
