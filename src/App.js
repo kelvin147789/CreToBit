@@ -17,8 +17,8 @@ function App() {
   const [ctbAddress,setctbAddress] = useState();
   const [CTBbalance,setCTBbalances] = useState(0);
   const demicals = 1000000000000000000;
-  const [currentSymbol,setcurrentSymbol] = useState();
-  const [depositedCTB,setdepositedCTB] = useState();
+  const [currentSymbol,setcurrentSymbol] = useState("ETH");
+  const [depositedCTB,setdepositedCTB] = useState(0);
   const [currentNetworkID,setcurrentNetworkID] = useState();
 
 
