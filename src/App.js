@@ -106,7 +106,7 @@ function App() {
    
 
     <div class="ctbBalances-2">
-    You have <span class="borrowText">{CTBbalance/demicals}</span>CTB to <span class="borrowText-1">BORROW</span>
+    You have <span class="borrowText">{CTBbalance/demicals}</span>CTB to <span class="borrowText-1">borrow</span>
     </div>
 
     <div class="ctbBalances-1">

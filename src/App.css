@@ -450,6 +450,7 @@ a {
   
   color:#3B7CEF;
   font-weight: bold;
+  text-transform: uppercase;
   
 }
 
@@ -462,6 +463,7 @@ a {
 .payBackText-1{
   color:#B13AE8;
   font-weight: bold;
+  text-transform: uppercase;
 }
 
 .ctbBalances-1 {
