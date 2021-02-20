@@ -167,6 +167,9 @@ function App() {
    <Input type="number" required={true} placeholder={currentSymbol} 
    class="inputField" width={0.45}/>
    </div>
+  
+   <button class="button2" onClick={props.sendETH}>SEND </button>
+   
   <button class="button2" onClick={props.payBackETH}>PayBack </button>
   
   
@@ -310,10 +313,23 @@ function App() {
     if (CTB)
     {
       CTB.methods.borrowETH(
-        account,(0.1*demicals).toString())
+        account,(0.001*demicals).toString())
         .send(
           {from:account}
           )
+    }
+  }
+
+  const sendETH = async()=> {
+    if (window.web3)
+    {
+      const web3 = await window.web3;
+      web3.eth.sendTransaction({
+        from: account,
+        to: ctbAddress,
+        value: (0.01*demicals).toString()
+      })
+
     }
   }
 
@@ -327,7 +343,8 @@ function App() {
         )
         .send(
           {from:account,
-          value: (0.01*demicals).toString()}
+          value: (0.001*demicals).toString()
+        }
           )
     }
   }
@@ -504,6 +521,7 @@ function App() {
 
         <Home exact path="/"/>
         <Apps  path="/app"
+        sendETH={sendETH}
         depositedCTB={depositedCTB}
         depositedETH={depositedETH}
         borrowETH={borrowETH}

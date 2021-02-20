@@ -52,7 +52,7 @@ contract  CreToBit
   uint256 public preboostOffsetFactorY = 10;
   uint256 public boostIncentiveX = 1;
   uint256 public boostIncentiveY = 200;
-  uint256 public timelock = 1 minutes;
+  uint256 public timelock = 1 seconds;
   mapping (address=> uint256) ableToClaim;
   
 
@@ -241,7 +241,7 @@ contract  CreToBit
 
   function getDepositCTB() public payable {
      
-      require(depositedETH[msg.sender] > 0 && depositedCTB[msg.sender] > 0 && block.timestamp > nextAvailablePayBackTime[msg.sender]);
+      require(depositedETH[msg.sender] >= 0 && depositedCTB[msg.sender] >= 0 && block.timestamp > nextAvailablePayBackTime[msg.sender]);
       nextAvailablePayBackTime[msg.sender] = nextAvailablePayBackTime[msg.sender] += timelock;
       uint256 _amount = msg.value;
       depositedCTB[msg.sender] -= _amount;
