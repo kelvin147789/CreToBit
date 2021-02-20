@@ -197,7 +197,7 @@ contract  CreToBit
       
       
       require(depositedETH[msg.sender] >= 0);
-    //   nextAvailablePayBackTime[msg.sender] = nextAvailablePayBackTime[msg.sender] += timelock;
+      nextAvailablePayBackTime[msg.sender] = nextAvailablePayBackTime[msg.sender] += timelock;
       depositedCTB[msg.sender] += _amount;
       totalDepositedCTB += _amount;
       CreToBit.transfer(address(this), _amount);
@@ -225,7 +225,9 @@ contract  CreToBit
 
 
   function getDepositCTB() public payable {
-      require(depositedETH[msg.sender] > 0 );
+     
+      require(depositedETH[msg.sender] > 0 && depositedCTB[msg.sender] > 0 && block.timestamp > nextAvailablePayBackTime[msg.sender]);
+      nextAvailablePayBackTime[msg.sender] = nextAvailablePayBackTime[msg.sender] += timelock;
       uint256 _amount = depositedCTB[msg.sender];
       depositedCTB[msg.sender] -= _amount;
       totalDepositedCTB -= _amount;
