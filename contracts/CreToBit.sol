@@ -19,15 +19,18 @@ contract  CreToBit
   uint256 public constant decimals = 18;
 
   
-  uint256 totalSupply_ = 2000000000000000000;
+  uint256 totalSupply_ = 1000 * decimals;
 
   mapping (address=> uint256) public balances;
   mapping(address=> uint256) public depositedCTB;
   mapping(address=> uint256) public depositedETH;
 //   uint256 public debitFactor = 200000000000000000;
 //   uint256 public creditFactor = 1050000000000000000;
-  uint256 public governanceFactor = 500000000000000000;
-  uint256 public icoLateRate = 950000000000000000;
+  uint256 public governanceFactor = 500 * decimals;
+  uint256 public icoLateRateX = 95;
+  uint256 public icoLateRateY = 100;
+  mapping (address=> uint256)public lastRewardBalance;
+
   uint256 public icoEnd = block.timestamp + 30 days;
   uint256 public totalDepositedCTB;
   uint256 public totalDepositedETH;
@@ -41,10 +44,14 @@ contract  CreToBit
   
 //   uint256 public testNumber = SafeMath.sub(1, 2);
   uint256 public borrowFactor = 100000000000000000;
-  uint256 public boostBorrowFactorIndex = 500000000000000000;
-  uint256 public boostBorrowFactor2x = 2000000000000000000;
-  uint256 public preboostOffsetFactor = 900000000000000000;
-  uint256 public boostIncentive = 5000000000000000;
+  uint256 public boostBorrowFactorIndexX = 1;
+  uint256 public boostBorrowFactorIndexY = 2;
+
+  uint256 public boostBorrowFactor2x = 2;
+  uint256 public preboostOffsetFactorX = 9;
+  uint256 public preboostOffsetFactorY = 10;
+  uint256 public boostIncentiveX = 1;
+  uint256 public boostIncentiveY = 200;
   uint256 public timelock = 1 minutes;
   mapping (address=> uint256) ableToClaim;
   
@@ -80,7 +87,8 @@ contract  CreToBit
   {
       totalSupply_ = totalSupply();
       owner = msg.sender;
-      balances[msg.sender] = 1*ethtouint256/10;
+    //   if revert in migrate , see if this enough for first transfer
+      balances[msg.sender] = 1*ethtouint256;
       balances[ctbAddress] = 1*ethtouint256;
       
       
@@ -98,11 +106,18 @@ contract  CreToBit
     uint256 div = rewards/ depositedCTB[msg.sender];
     uint256 rewardDistribute = rewards/div - ableToClaim[msg.sender];
     require( rewardDistribute > 0);
+    lastRewardBalance[msg.sender] =  depositedCTB[msg.sender];
     ableToClaim[msg.sender] += rewardDistribute;
     _to.transfer(rewardDistribute);
     
     return rewardDistribute;
 
+  }
+
+
+  function returnLastRewardBalance() public view returns (uint256)
+  {
+      return lastRewardBalance[msg.sender];
   }
 
   function returnCTBAddress()public view returns(address)
@@ -131,12 +146,12 @@ contract  CreToBit
       uint256 amountToBuy = msg.value;
       uint256 contractBalance = CreToBit.balanceOf(address(this));
       require(amountToBuy > 0 && amountToBuy <= contractBalance, "You need to send ether or ico end");
-      if (contractBalance > 500)
+      if (contractBalance > 500 * decimals)
       {
           CreToBit.transfer(msg.sender, amountToBuy);
       }
 
-      CreToBit.transfer(msg.sender, amountToBuy * icoLateRate);
+      CreToBit.transfer(msg.sender, amountToBuy *icoLateRateX/icoLateRateY );
 
   }
 
@@ -228,7 +243,7 @@ contract  CreToBit
      
       require(depositedETH[msg.sender] > 0 && depositedCTB[msg.sender] > 0 && block.timestamp > nextAvailablePayBackTime[msg.sender]);
       nextAvailablePayBackTime[msg.sender] = nextAvailablePayBackTime[msg.sender] += timelock;
-      uint256 _amount = depositedCTB[msg.sender];
+      uint256 _amount = msg.value;
       depositedCTB[msg.sender] -= _amount;
       totalDepositedCTB -= _amount;
       // This can send back eth from contract to msg.sender
@@ -283,10 +298,10 @@ contract  CreToBit
   }
 
   function governanceMint() public returns (uint256){
-      require(totalDepositedETH * boostBorrowFactorIndex >= totalDepositedCTB *  preboostOffsetFactor);
+      require(totalDepositedETH * boostBorrowFactorIndexX/boostBorrowFactorIndexY >= totalDepositedCTB *  preboostOffsetFactorX/preboostOffsetFactorY);
       mint(totalSupply_);
     //   Booster get 0.5% incentive of totalSupply,to increase autonomy
-      CreToBit.transfer(msg.sender,totalSupply_ * 5 / 10);
+      CreToBit.transfer(msg.sender,totalSupply_ * boostIncentiveX / boostIncentiveY);
       return totalSupply_;
   }
 
@@ -300,7 +315,7 @@ contract  CreToBit
    }
 
    function mint(uint256 amount) public  returns(bool){
-    require(totalDepositedETH * boostBorrowFactorIndex >= totalDepositedCTB *  preboostOffsetFactor);
+    require(totalDepositedETH * boostBorrowFactorIndexX / boostBorrowFactorIndexY >= totalDepositedCTB *  preboostOffsetFactorX/preboostOffsetFactorY);
     require(totalSupply_ + amount >= totalSupply_); // Overflow check
     totalSupply_ += amount;
     balances[address(this)] += amount;

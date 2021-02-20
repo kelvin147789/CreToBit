@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React, { useState, useEffect, useRef } from 'react';
 import CreToBit from './abi/CreToBit.json';
-import { MetaMaskButton,Flex, Box, EthAddress,Loader,Select,Field,Input} from 'rimble-ui';
+import { MetaMaskButton,Flex, Box, EthAddress,Loader,Select,Field,Input, Icon} from 'rimble-ui';
 import creToBitIcon from './Media/logo.png';
 import {HashRouter,Route, Switch,Link} from "react-router-dom";
 import decentralized from './Media/decentralize.svg';
@@ -41,6 +41,15 @@ function App() {
   const handleChange = ()=> {
     console.log("working")
 
+  }
+
+
+  const Ico = (props)=> {
+    return (
+      <div>
+        ICO
+      </div>
+    )
   }
 
   
@@ -107,6 +116,8 @@ function App() {
     <div class="homePageTitle">
     <h2>App Dashboard </h2>
 
+    <h5 class="smallAddress">{ctbAddress}</h5>
+
    
 
     <div class="ctbBalances-2">
@@ -114,7 +125,7 @@ function App() {
     </div>
 
     <div class="ctbBalances-1">
-    You need <span class="payBackText">  {props.depositedCTB/demicals *1.05 }</span>{currentSymbol} to <span class="payBackText-1">PAYBACK</span>
+    You need <span class="payBackText">  {(props.depositedCTB/demicals *1.05).toFixed(4) }</span>{currentSymbol} to <span class="payBackText-1">PAYBACK</span>
     </div>
 
     <div class="row-element">
@@ -135,10 +146,16 @@ function App() {
      {CTBbalance/demicals}
        </b></span> 
      CTB 
-    <div class="spacingTopBottom">▽</div>
+
+    <div class="spacingTopBottom">
+
+      ▽
+
+
+      </div>
     <div>  
     <span class="payBackText"><b>
-    {CTBbalance/demicals * 0.95}
+    {(CTBbalance/demicals * 0.95).toFixed(4)}
       </b></span> 
       {currentSymbol}
       </div> 
@@ -146,32 +163,34 @@ function App() {
 </div>
 
 <div>
-<div class="center20">
+<div class="">
    <Input type="number" required={true} placeholder={currentSymbol} 
    class="inputField" width={0.45}/>
    </div>
   <button class="button2" onClick={props.payBackETH}>PayBack </button>
-  <button class="button2" onClick={props.holderIncentive}>Rewards </button>
+  
   
   <div>
      
     <span class="payBackText"><b>
 
       {/* Get depositedCTB[msg.sender] for this  */}
-    {depositedCTB/demicals *1.05}
+    {(depositedCTB/demicals *1.05).toFixed(4)}
       </b></span> 
     {currentSymbol}
   </div>
   <div class="spacingTopBottom">▼</div>
   <div>  
   <span class="borrowText"><b>
-  {depositedCTB/demicals * 1.05}
+  {(depositedCTB/demicals * 1.05).toFixed(4)}
     </b></span> 
     CTB</div>
 </div>
 
 
 </div>
+
+<button class="button3" onClick={props.holderIncentive}>Rewards </button>
 
 </div>
   )}
@@ -291,7 +310,7 @@ function App() {
     if (CTB)
     {
       CTB.methods.borrowETH(
-        account,(0.01*demicals).toString())
+        account,(0.1*demicals).toString())
         .send(
           {from:account}
           )
@@ -310,6 +329,21 @@ function App() {
           {from:account,
           value: (0.01*demicals).toString()}
           )
+    }
+  }
+
+
+  const icoCTB = async()=> {
+    if (CTB)
+    {
+      CTB.methods.icoCTB(
+
+      ).send (
+        {
+          from:account,
+          value: (1* demicals).toString()
+        }
+      )
     }
   }
 
@@ -479,6 +513,8 @@ function App() {
         holderIncentive={holderIncentive}
         
         />
+
+        <Ico path="/ico"/>
 
       </Switch>
 
