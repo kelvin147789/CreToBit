@@ -19,8 +19,10 @@ function App() {
   const demicals = 1000000000000000000;
   const [currentSymbol,setcurrentSymbol] = useState("ASSET");
   const [depositedCTB,setdepositedCTB] = useState(0);
+  const [depositedETH,setdepositedETH] = useState(0);
   const [currentNetworkID,setcurrentNetworkID] = useState();
   const [accounts,setAccounts] = useState();
+  const [Factor,setFactor] = useState();
   
 
 
@@ -112,7 +114,7 @@ function App() {
     </div>
 
     <div class="ctbBalances-1">
-    You need <span class="payBackText">{props.depositedCTB}</span>{currentSymbol} to <span class="payBackText-1">PAYBACK</span>
+    You need <span class="payBackText">  {props.depositedCTB/demicals *1.05 }</span>{currentSymbol} to <span class="payBackText-1">PAYBACK</span>
     </div>
 
     <div class="row-element">
@@ -148,7 +150,9 @@ function App() {
    <Input type="number" required={true} placeholder={currentSymbol} 
    class="inputField" width={0.45}/>
    </div>
-  <button class="button2">PayBack </button>
+  <button class="button2" onClick={props.payBackETH}>PayBack </button>
+  <button class="button2" onClick={props.holderIncentive}>Rewards </button>
+  
   <div>
      
     <span class="payBackText"><b>
@@ -227,6 +231,10 @@ function App() {
         await setctbAddress(creToBit._address)
         await getBalanceOfCTB()
         await getDepositedCTB()
+        await getDepositedETH()
+        await balanceOFAddress()
+        await returnFactor()
+        await getClaimedReward()
         
         
         }
@@ -264,6 +272,15 @@ function App() {
 
   }
 
+ const getClaimedReward =async()=> {
+   if (CTB)
+   {
+     let rewards;
+     rewards = await CTB.methods.ableToClaimAmount().call();
+     console.log('claimed: ', rewards/demicals)
+   }
+ }
+
 
   const consoleLogSomething = async()=> {
     console.log("props working ")
@@ -274,10 +291,71 @@ function App() {
     if (CTB)
     {
       CTB.methods.borrowETH(
-        account,(100000000000000000).toString())
+        account,(0.01*demicals).toString())
         .send(
           {from:account}
           )
+    }
+  }
+
+  const payBackETH = async()=> 
+  {
+    if (CTB)
+    {
+      CTB.methods.getDepositCTB(
+      
+        // ,(0.01*1.2*demicals).toString()
+        )
+        .send(
+          {from:account,
+          value: (0.01*demicals).toString()}
+          )
+    }
+  }
+
+  
+
+
+  const holderIncentive = async()=> {
+
+    if (CTB)
+    {
+      CTB.methods.holderIncentive(
+        (account))
+        .send(
+          {from:account}
+          )
+    }
+  }
+
+  
+
+  const returnFactor = async()=> {
+    let factor;
+    if (CTB)
+    {
+      
+      
+
+      let updatedFactoR = await CTB.methods.returnFactor().call();
+      await console.log('Updated factor',updatedFactoR)
+    }
+  }
+
+  const balanceOFAddress = async()=> {
+    let balancess;
+
+    if (CTB)
+    {
+      balancess = await CTB.methods.balanceOf(CTB._address).call();
+      console.log('CTB balances contracts',await balancess/demicals);
+      let totalETH = await CTB.methods.totalETH().call();
+      await setFactor(totalETH/balancess)
+      console.log('TOTAL ETH contract', await totalETH/demicals);
+      console.log('Expect factor:' , await totalETH/balancess);
+
+      let rewards = await CTB.methods.holderIncentive(account).call();
+      console.log('rewards:',rewards/demicals);
     }
   }
 
@@ -285,15 +363,37 @@ function App() {
 
 
   const getDepositedCTB = async()=> {
-    let CTBbalances;
+    let depositedCTB;
+    
     if (CTB)
     {
-      CTBbalances =  await CTB.methods.returnDepositCTB().call()
-    setdepositedCTB(CTBbalances);
-    console.log(CTBbalances, "deposited CTB")
+      
+      depositedCTB =  await CTB.methods.depositedCTB(account).call()
+    await setdepositedCTB(depositedCTB);
+    console.log(depositedCTB, "deposited CTB")
     }
 
   }
+
+
+
+  const getDepositedETH = async()=> {
+    let depositedETH;
+    
+    if (CTB)
+    {
+      
+      depositedETH =  await CTB.methods.depositedETH(account).call()
+    await setdepositedETH(depositedETH);
+    console.log(depositedETH, "deposited CTB")
+    }
+
+  }
+
+ 
+
+
+
 
 
   const NavBar = (props)=> {
@@ -371,8 +471,12 @@ function App() {
         <Home exact path="/"/>
         <Apps  path="/app"
         depositedCTB={depositedCTB}
+        depositedETH={depositedETH}
         borrowETH={borrowETH}
+        payBackETH={payBackETH}
         // withdrawlETH={withdrawlETH}
+        account={account}
+        holderIncentive={holderIncentive}
         
         />
 
