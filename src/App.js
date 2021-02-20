@@ -168,7 +168,7 @@ function App() {
    class="inputField" width={0.45}/>
    </div>
   
-   <button class="button2" onClick={props.sendETH}>SEND </button>
+   {/* <button class="button2" onClick={props.sendETH}>SEND </button> */}
    
   <button class="button2" onClick={props.payBackETH}>PayBack </button>
   
@@ -332,7 +332,7 @@ function App() {
 
     }
   }
-
+  // Must equal or less than borrowETH
   const payBackETH = async()=> 
   {
     if (CTB)

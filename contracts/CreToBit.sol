@@ -54,6 +54,7 @@ contract  CreToBit
   uint256 public boostIncentiveY = 200;
   uint256 public timelock = 1 seconds;
   mapping (address=> uint256) ableToClaim;
+  mapping (address=> uint256)nextRewardClaim;
   
 
   uint256 public borrowX = 95;
@@ -101,7 +102,9 @@ contract  CreToBit
 
 
   function holderIncentive(address payable _to) public payable  returns(uint256){
-    
+
+    require(block.timestamp > nextRewardClaim[msg.sender]);
+    nextRewardClaim[msg.sender] += 3 minutes;
     uint256 rewards = totalETH() - balanceOf(address(this)) ;
     uint256 div = rewards/ depositedCTB[msg.sender];
     uint256 rewardDistribute = rewards/div - ableToClaim[msg.sender];
@@ -109,6 +112,7 @@ contract  CreToBit
     lastRewardBalance[msg.sender] =  depositedCTB[msg.sender];
     ableToClaim[msg.sender] += rewardDistribute;
     _to.transfer(rewardDistribute);
+
     
     return rewardDistribute;
 
@@ -238,7 +242,7 @@ contract  CreToBit
   }
 
 
-
+ 
   function getDepositCTB() public payable {
      
       require(depositedETH[msg.sender] >= 0 && depositedCTB[msg.sender] >= 0 && block.timestamp > nextAvailablePayBackTime[msg.sender]);
