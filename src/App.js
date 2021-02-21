@@ -149,6 +149,8 @@ function App() {
     You need <span class="payBackText">  {(props.depositedCTB/demicals).toFixed(4) }</span>{currentSymbol} to <span class="payBackText-1">PAYBACK</span>
     </div>
 
+
+{/* Start of row element */}
     <div class="row-element">
 
 
@@ -214,10 +216,83 @@ function App() {
 
 </div>
 
-<div class="row-element-1">
 
-<button class="button3" onClick={props.sendETH}>Initial CTB </button>
-<button class="button3" onClick={props.holderIncentive}>Rewards </button> </div>
+{/* End of Row ELement */}
+
+
+
+{/* Start of row element-1 */}
+<div class="row-element">
+
+
+
+<div>
+<div>
+<Input type="number" required={true} placeholder={"CTB"} 
+class="inputField" width={0.45}
+onChange={handleChange}
+/>
+</div>
+<button class="button1" onClick={props.borrowETH}>Initial CTB</button>
+<div>
+  
+ <span class="borrowText"><b>
+ {CTBbalance/demicals}
+   </b></span> 
+ CTB 
+
+<div class="spacingTopBottom">
+
+  ▽
+
+
+  </div>
+<div>  
+<span class="payBackText"><b>
+{(CTBbalance/demicals * 0.95).toFixed(4)}
+  </b></span> 
+  {currentSymbol}
+  </div> 
+</div>
+</div>
+
+<div>
+<div class="">
+<Input type="number" required={true} placeholder={currentSymbol} 
+class="inputField" width={0.45}/>
+</div>
+
+{/* <button class="button2" onClick={props.sendETH}>SEND </button> */}
+
+<button class="button2" onClick={props.payBackETH}>Reward </button>
+
+
+<div>
+ 
+<span class="payBackText"><b>
+
+  {/* Get depositedCTB[msg.sender] for this  */}
+{(depositedCTB/demicals).toFixed(4)}
+  </b></span> 
+{currentSymbol}
+</div>
+<div class="spacingTopBottom">▼</div>
+<div>  
+<span class="borrowText"><b>
+{(depositedCTB/demicals ).toFixed(4)}
+</b></span> 
+CTB</div>
+</div>
+
+
+</div>
+
+
+{/* End of Row ELement-1 */}
+
+
+
+
 </div>
 
 
@@ -323,7 +398,7 @@ function App() {
    if (CTB)
    {
      let rewards;
-     rewards = await CTB.methods.ableToClaimAmount().call();
+     rewards = await CTB.methods.holderIncentive().call();
      console.log('claimed: ', rewards/demicals)
    }
  }
@@ -563,7 +638,7 @@ function App() {
 
          <div> 
            <a href="#/gov">     
-         <h2 className="icoText" id="blink1">GOV</h2>
+         <h2 className="govText" id="blink1">GOV</h2>
          </a>
          </div>
        
@@ -615,6 +690,7 @@ function App() {
         depositedETH={depositedETH}
         borrowETH={borrowETH}
         payBackETH={payBackETH}
+        getClaimedReward={getClaimedReward}
         // withdrawlETH={withdrawlETH}
         account={account}
         holderIncentive={holderIncentive}

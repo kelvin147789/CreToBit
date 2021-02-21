@@ -327,8 +327,9 @@ a {
   display:flex;
   align-items: center;
   justify-content: space-evenly;
-  padding-top: 5rem;
+  padding-top: 1.5rem;
   flex-direction: row;
+  
 }
 
 .row-element-1 {
@@ -336,8 +337,10 @@ a {
   display:flex;
   align-items: center;
   justify-content: space-evenly;
-  padding-top: 0rem;
+  padding-top: 1.5rem;
   flex-direction: row;
+  margin-right:4rem;
+  
 }
 
 
@@ -396,7 +399,36 @@ a {
 }
 
 
+.rewardbutton2 {
+  margin-left:5rem;
+  margin-top:10%;
+  height: 45px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 500;
+  color: #000;
+  background-color: #fff;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+  outline: none;
+  margin-bottom: 5rem;
+  }
+
+.rewardbutton2:hover {
+  background-color: #EFBD13;
+  box-shadow: 0px 15px 20px rgba(239, 189, 19, 0.4);
+  color: #fff;
+  transform: translateY(-7px);
+}
+
+
 .button3 {
+  
   margin-top:10%;
   height: 45px;
   font-family: 'Roboto', sans-serif;
@@ -420,6 +452,11 @@ a {
   box-shadow: 0px 15px 20px rgba(20, 232, 207, 0.4);
   color: #fff;
   transform: translateY(-7px);
+}
+
+.initialColor {
+  background-color: #1EE8CF;
+  box-shadow: 0px 15px 20px rgba(20, 232, 207, 0.4);
 }
 
 .typing-demo-2 {
@@ -496,6 +533,21 @@ a {
   font-weight: bold;
 }
 
+.initialText {
+  color: #1EE8CF;
+  padding:1.5rem;
+  font-weight: bold;
+}
+
+.rewardText {
+  color: #EFBD13;
+  padding:1.5rem;
+  font-weight: bold;
+  
+}
+
+
+
 .payBackText-1{
   color:#B13AE8;
   font-weight: bold;
@@ -514,8 +566,9 @@ a {
   padding-right:0.6rem;
 }
 
-.icoText {
+.govText {
   color: #F5B041;
+  
 }
 
 
@@ -543,4 +596,12 @@ a {
     align-items: center;
     text-align: center;
     font-size: 0.5rem;
+  }
+
+  .closerToTop {
+    margin-bottom:0rem;
+  }
+  .paddingLeft {
+    position: relative;
+    padding-left:1rem;
   }
