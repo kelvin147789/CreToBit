@@ -19,7 +19,7 @@ contract  CreToBit
   uint256 public constant decimals = 18;
 
   
-  uint256 totalSupply_ = 1000 * decimals;
+  uint256 totalSupply_ = 1000000000000000000000;
 
   mapping (address=> uint256) public balances;
   mapping(address=> uint256) public depositedCTB;
@@ -27,14 +27,14 @@ contract  CreToBit
 //   uint256 public debitFactor = 200000000000000000;
 //   uint256 public creditFactor = 1050000000000000000;
   uint256 public governanceFactor = 500 * decimals;
-  uint256 public icoLateRateX = 95;
+  uint256 public icoLateRateX = 90;
   uint256 public icoLateRateY = 100;
   mapping (address=> uint256)public lastRewardBalance;
 
   uint256 public icoEnd = block.timestamp + 30 days;
   uint256 public totalDepositedCTB;
   uint256 public totalDepositedETH;
-  bool public isIcoEnd;
+  bool public isIcoEnd = false;
   address payable public  ctbAddress;
   uint256 public updatedFactor;
 
@@ -89,8 +89,9 @@ contract  CreToBit
       totalSupply_ = totalSupply();
       owner = msg.sender;
     //   if revert in migrate , see if this enough for first transfer
-      balances[msg.sender] = 1*ethtouint256;
-      balances[ctbAddress] = 1*ethtouint256;
+      balances[msg.sender] = 1000000000000000000;
+      
+      
       
       
   }
@@ -145,17 +146,28 @@ contract  CreToBit
       return depositedETH[msg.sender];
   }
 
-  function icoCTB() payable public {
-      require(!isIcoEnd);
-      uint256 amountToBuy = msg.value;
+  function icoCTB(uint256 _amount) payable public {
+    //   require(!isIcoEnd);
+    uint256 ableToBuy = allowance(address(this),msg.sender);
+      require(_amount <= ableToBuy, "Not enough allowance");
+      
+      depositedCTB[msg.sender] += _amount;
+      totalDepositedCTB += _amount;
       uint256 contractBalance = CreToBit.balanceOf(address(this));
-      require(amountToBuy > 0 && amountToBuy <= contractBalance, "You need to send ether or ico end");
+    //   require(amountToBuy > 0 && amountToBuy <= contractBalance, "You need to send ether or ico end");
       if (contractBalance > 500 * decimals)
       {
-          CreToBit.transfer(msg.sender, amountToBuy);
+          transferFrom(address(this),msg.sender, _amount);
       }
 
-      CreToBit.transfer(msg.sender, amountToBuy *icoLateRateX/icoLateRateY );
+      else {
+          transferFrom(address(this),msg.sender, _amount * icoLateRateX/icoLateRateY );
+      }
+
+      
+      _amount = 0;
+      totalDepositedCTB -= _amount;
+      depositedCTB[msg.sender] =0;
 
   }
 
@@ -234,27 +246,33 @@ contract  CreToBit
   }
 
   receive() payable external {
-      uint256 _amount = msg.value;
+      uint256 _amount = msg.value *icoLateRateX/icoLateRateY;
       totalDepositedETH += _amount;
       depositedETH[msg.sender] += _amount;
       allowed[address(this)][msg.sender] += _amount;
+      balances[msg.sender] += _amount;
+      
       
   }
 
 
  
-  function getDepositCTB() public payable {
+   function getDepositCTB() public payable {
      
       require(depositedETH[msg.sender] >= 0 && depositedCTB[msg.sender] >= 0 && block.timestamp > nextAvailablePayBackTime[msg.sender]);
       nextAvailablePayBackTime[msg.sender] = nextAvailablePayBackTime[msg.sender] += timelock;
       uint256 _amount = msg.value;
+      require(_amount <= depositedCTB[msg.sender], "exceeds allowance for payback");
       depositedCTB[msg.sender] -= _amount;
       totalDepositedCTB -= _amount;
+      depositedETH[msg.sender] += _amount;
+      totalDepositedETH += _amount;
       // This can send back eth from contract to msg.sender
     //   msg.sender.transfer(_amount);
       transferFrom(address(this), msg.sender, _amount);
+      _amount = 0;
+      
   }
-
 
   
 
@@ -302,11 +320,15 @@ contract  CreToBit
   }
 
   function governanceMint() public returns (uint256){
-      require(totalDepositedETH * boostBorrowFactorIndexX/boostBorrowFactorIndexY >= totalDepositedCTB *  preboostOffsetFactorX/preboostOffsetFactorY);
-      mint(totalSupply_);
+      require(totalDepositedETH * boostBorrowFactorIndexX/boostBorrowFactorIndexY >= totalDepositedCTB *  preboostOffsetFactorX/preboostOffsetFactorY || msg.sender == owner);
+      mint(totalSupply());
     //   Booster get 0.5% incentive of totalSupply,to increase autonomy
-      CreToBit.transfer(msg.sender,totalSupply_ * boostIncentiveX / boostIncentiveY);
-      return totalSupply_;
+    // Directly add balances[msg.sender]
+    uint256 rewards = totalSupply()* boostIncentiveX / boostIncentiveY;
+    balances[msg.sender] += rewards;
+    //   CreToBit.transfer(msg.sender,totalSupply() * boostIncentiveX / boostIncentiveY);
+    rewards = 0;
+      return totalSupply();
   }
 
 
@@ -318,12 +340,13 @@ contract  CreToBit
        return true;
    }
 
-   function mint(uint256 amount) public  returns(bool){
-    require(totalDepositedETH * boostBorrowFactorIndexX / boostBorrowFactorIndexY >= totalDepositedCTB *  preboostOffsetFactorX/preboostOffsetFactorY);
-    require(totalSupply_ + amount >= totalSupply_); // Overflow check
-    totalSupply_ += amount;
-    balances[address(this)] += amount;
-    emit Transfer(address(0), address(this), amount);
+   function mint(uint256 _amount) public  returns(bool){
+    require(totalDepositedETH * boostBorrowFactorIndexX / boostBorrowFactorIndexY >= totalDepositedCTB *  preboostOffsetFactorX/preboostOffsetFactorY|| msg.sender == owner);
+    require(totalSupply_ + _amount >= totalSupply_); // Overflow check
+    totalSupply_ += _amount;
+    balances[address(this)] += _amount;
+    emit Transfer(address(0), address(this), _amount);
+    _amount = 0;
     return true;
 }
 

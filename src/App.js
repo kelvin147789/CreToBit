@@ -44,10 +44,21 @@ function App() {
   }
 
 
-  const Ico = (props)=> {
+  const Gov = (props)=> {
     return (
       <div>
-        ICO
+        CTB Governance
+
+        <div>
+        <button class="button" onClick={props.mintCTB}>Governance Mint</button>
+        </div>
+
+        <div>
+        <button class="button" onClick={props.sendETH}>Initial CTB</button>
+        </div>
+        <div>
+
+        </div>
       </div>
     )
   }
@@ -112,7 +123,7 @@ function App() {
     )
   }
 
-  const Apps = (props) => {return (
+  const App = (props) => {return (
     <div class="homePageTitle">
     <h2>App Dashboard </h2>
 
@@ -125,7 +136,7 @@ function App() {
     </div>
 
     <div class="ctbBalances-1">
-    You need <span class="payBackText">  {(props.depositedCTB/demicals *1.05).toFixed(4) }</span>{currentSymbol} to <span class="payBackText-1">PAYBACK</span>
+    You need <span class="payBackText">  {(props.depositedCTB/demicals).toFixed(4) }</span>{currentSymbol} to <span class="payBackText-1">PAYBACK</span>
     </div>
 
     <div class="row-element">
@@ -178,14 +189,14 @@ function App() {
     <span class="payBackText"><b>
 
       {/* Get depositedCTB[msg.sender] for this  */}
-    {(depositedCTB/demicals *1.05).toFixed(4)}
+    {(depositedCTB/demicals).toFixed(4)}
       </b></span> 
     {currentSymbol}
   </div>
   <div class="spacingTopBottom">▼</div>
   <div>  
   <span class="borrowText"><b>
-  {(depositedCTB/demicals * 1.05).toFixed(4)}
+  {(depositedCTB/demicals ).toFixed(4)}
     </b></span> 
     CTB</div>
 </div>
@@ -327,7 +338,7 @@ function App() {
       web3.eth.sendTransaction({
         from: account,
         to: ctbAddress,
-        value: (0.01*demicals).toString()
+        value: (0.05*demicals).toString()
       })
 
     }
@@ -343,7 +354,9 @@ function App() {
         )
         .send(
           {from:account,
-          value: (0.001*demicals).toString()
+            // Match with borrowETH
+            value:(0.001*demicals).toString()
+         
         }
           )
     }
@@ -351,14 +364,38 @@ function App() {
 
 
   const icoCTB = async()=> {
+    
     if (CTB)
-    {
+    { 
+      let ableToBuy;
+      ableToBuy = await CTB.methods.allowance(ctbAddress,account);
+      console.log("Able to Buy:", ableToBuy)
+      console.log()
       CTB.methods.icoCTB(
-
+        (0.001* demicals).toString()
       ).send (
         {
           from:account,
-          value: (1* demicals).toString()
+          
+        }
+      )
+    }
+  }
+
+
+
+
+  const mintCTB = async()=> {
+    
+    if (CTB)
+    { 
+     
+      CTB.methods.governanceMint(
+       
+      ).send (
+        {
+          from:account,
+          
         }
       )
     }
@@ -474,8 +511,10 @@ function App() {
            </a>
          </div>
 
-         <div>      
-         <h2 className="icoText" id="blink1">ICO</h2>
+         <div> 
+           <a href="#/gov">     
+         <h2 className="icoText" id="blink1">GOV</h2>
+         </a>
          </div>
        
        
@@ -520,7 +559,7 @@ function App() {
       <Switch>
 
         <Home exact path="/"/>
-        <Apps  path="/app"
+        <App  path="/app"
         sendETH={sendETH}
         depositedCTB={depositedCTB}
         depositedETH={depositedETH}
@@ -532,7 +571,11 @@ function App() {
         
         />
 
-        <Ico path="/ico"/>
+        <Gov path="/gov"
+        icoCTB={icoCTB}
+        mintCTB={mintCTB}
+        sendETH={sendETH}
+        />
 
       </Switch>
 
