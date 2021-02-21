@@ -25,8 +25,11 @@ https://cretobit.on.fleek.co
 
 
 Welcome to CreToBit
+
 Decentralized Bank Protocol
+
 Proof of Credit (PoC)
+
 What is Proof of Credit ?
 
  
