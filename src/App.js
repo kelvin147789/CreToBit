@@ -15,7 +15,7 @@ import Web3 from 'web3';
 
 var BigNumber = require('big-number');
 
-
+// main js 
 function App() {
 
   let [account,setAccount] = useState("CONNECT YOUR WALLET");
@@ -30,6 +30,8 @@ function App() {
   const [currentNetworkID,setcurrentNetworkID] = useState();
   const [accounts,setAccounts] = useState();
   const [Factor,setFactor] = useState();
+  const [assetBalance,setAssetBalance] = useState();
+  const [ableToClaim,setAbleToClaim] = useState(0);
 
 
   
@@ -42,6 +44,17 @@ function App() {
 
   // * create function to decide asset symbol 
 
+
+    // return reward fun
+    const returnReward = async()=> {
+      if (CTB)
+      {
+        let rewards = CTB.methods.ableToClaimAmount().call();
+        await setAbleToClaim(rewards);
+      }
+    }
+
+ 
   
 
   useEffect(()=> {
@@ -156,20 +169,20 @@ function App() {
 
     const [borrowValue,setborrowValue] = useState("")
 
-   const handleChange =  async(e) => {
-    window.web3 = new Web3(window.web3.currentProvider);
-    const web3js = await window.web3;
-    if (web3js)
-    { console.log((e.target.value).toString())
-      const value = (e.target.value)*props.demicals;
-      console.log(value);
-      let abc = await web3js.utils.fromWei((value).toString(),'ether')
-      setborrowValue(JSON.stringify(abc))
-      console.log(abc)
+  //  const handleChange =  async(e) => {
+  //   window.web3 = new Web3(window.web3.currentProvider);
+  //   const web3js = await window.web3;
+  //   if (web3js)
+  //   { console.log((e.target.value).toString())
+  //     const value = (e.target.value)*props.demicals;
+  //     console.log(value);
+  //     let abc = await web3js.utils.fromWei((value).toString(),'ether')
+  //     setborrowValue(JSON.stringify(abc))
+  //     console.log(abc)
       
-  }
+  // }
 
-   }
+  //  }
 
 // borrowETH function *
 
@@ -194,6 +207,8 @@ function App() {
           )
     }
   }
+
+
 
 
   const payBackETH = async()=> 
@@ -239,6 +254,7 @@ function App() {
     return (
     <div class="homePageTitle">
     <h2>App Dashboard </h2>
+   
 
     <h5 class="smallAddress">{ctbAddress}</h5>
 
@@ -374,7 +390,7 @@ value={depositState.depositAmt}
 <div>
   
  <span class="payBackText"><b>
- {CTBbalance/demicals}
+ {assetBalance}
    </b></span> 
    {currentSymbol}
 
@@ -387,7 +403,7 @@ value={depositState.depositAmt}
   </div>
 <div>  
 <span class="initialText"><b>
-{(CTBbalance/demicals * 0.9).toFixed(4)}
+{(assetBalance * 0.9).toFixed(4)}
   </b></span> 
   CTB 
   </div> 
@@ -402,7 +418,9 @@ class="inputField" width={0.45}/> */}
 
 {/* <button class="button2" onClick={props.sendETH}>SEND </button> */}
 
-<button class="rewardbutton2" onClick={props.payBackETH}>Reward </button>
+
+{/* rewardbutton */}
+<button class="rewardbutton2" onClick={props.holderIncentive}>Reward </button>
 
 
 <div>
@@ -410,7 +428,7 @@ class="inputField" width={0.45}/> */}
 <span class="rewardText"><b>
 
   {/* Get depositedCTB[msg.sender] for this  */}
-{(depositedCTB/demicals).toFixed(4)}
+{(ableToClaim/demicals).toFixed(4)}
   </b></span> 
 {currentSymbol}
 </div>
@@ -449,6 +467,9 @@ class="inputField" width={0.45}/> */}
   
       const web3js = await window.web3;
       const accounts = await web3js.eth.getAccounts();
+      let balances = await web3js.eth.getBalance(accounts[0]);
+      setAssetBalance((balances/demicals).toFixed(4));
+      
      
       const networkID = await web3js.eth.net.getId();
       if (networkID)
@@ -494,7 +515,7 @@ class="inputField" width={0.45}/> */}
         await getDepositedETH()
         await balanceOFAddress()
         await returnFactor()
-        await getClaimedReward()
+        await returnReward()
         
         
         }
@@ -535,14 +556,14 @@ class="inputField" width={0.45}/> */}
 
   }
 
- const getClaimedReward =async()=> {
-   if (CTB)
-   {
-     let rewards;
-     rewards = await CTB.methods.holderIncentive().call();
-     console.log('claimed: ', rewards/demicals)
-   }
- }
+//  const getClaimedReward =async()=> {
+//    if (CTB)
+//    {
+//      let rewards;
+//      rewards = await CTB.methods.holderIncentive().call();
+//      console.log('claimed: ', rewards/demicals)
+//    }
+//  }
 
 
   const consoleLogSomething = async()=> {
@@ -805,11 +826,13 @@ class="inputField" width={0.45}/> */}
         depositedETH={depositedETH}
         // borrowETH={borrowETH}
         // payBackETH={payBackETH}
-        getClaimedReward={getClaimedReward}
+        // getClaimedReward={getClaimedReward}
         // withdrawlETH={withdrawlETH}
         account={account}
         holderIncentive={holderIncentive}
         demicals={demicals}
+        assetBalance={assetBalance}
+        ableToClaim={ableToClaim}
    
         
 
