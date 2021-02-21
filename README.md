@@ -74,8 +74,12 @@ If a new user want to get 100 CTB, it doesn't necessary from exchange.Instead, t
 
 Example:
 ​
+
 Expected purchase: 100 CTB = [Total] , 1%[Total] = 1 CTB
+
 ​
 Initial: 100%[Total] to protocol
+
+
 ​
 Result : 90 CTB received
