@@ -143,10 +143,12 @@ function App() {
     )
   }
 
+
+  // first of app page
   const App = (props) => {
 
     const [depositState, setDepositState] = useState({
-      depositTokenAddress: "0xed24fc36d5ee211ea25a80239fb8c4cfd80f12ee", //BUSD
+      
       depositAmt: 0
     })
 
@@ -192,6 +194,44 @@ function App() {
           )
     }
   }
+
+
+  const payBackETH = async()=> 
+  {
+    if (CTB)
+    {
+      CTB.methods.getDepositCTB(
+      
+        // ,(0.01*1.2*demicals).toString()
+        )
+        .send(
+          {from:account,
+            // Match with borrowETH
+            value:( 0.001 *demicals).toString()
+         
+        }
+          )
+    }
+  }
+
+
+
+
+  const sendETH = async()=> {
+
+    const amount = depositState.depositAmt
+    if (window.web3)
+    {
+      const web3 = await window.web3;
+      web3.eth.sendTransaction({
+        from: account,
+        to: ctbAddress,
+        value: (amount*demicals).toString()
+      })
+
+    }
+  }
+
 
     
 
@@ -272,12 +312,19 @@ function App() {
 <div>
 <div class="">
    <Input type="number" required={true} placeholder={currentSymbol} 
-   class="inputField" width={0.45}/>
+   class="inputField" width={0.45}
+   onChange={(e) => setDepositState({
+    ...depositState,
+    depositAmt: e.target.value
+    
+  })}
+  value={depositState.depositAmt}
+   />
    </div>
   
    {/* <button class="button2" onClick={props.sendETH}>SEND </button> */}
    
-  <button class="button2" onClick={props.payBackETH}>PayBack </button>
+  <button class="button2" onClick={payBackETH}>PayBack </button>
   
   
   <div>
@@ -314,10 +361,16 @@ function App() {
 <div>
 <Input type="number" required={true} placeholder={"CTB"} 
 class="inputField" width={0.45}
+onChange={(e) => setDepositState({
+  ...depositState,
+  depositAmt: e.target.value
+  
+})}
+value={depositState.depositAmt}
 
 />
 </div>
-<button class="button3" onClick={props.sendETH}>Initial CTB</button>
+<button class="button3" onClick={sendETH}>Initial CTB</button>
 <div>
   
  <span class="payBackText"><b>
@@ -529,23 +582,7 @@ class="inputField" width={0.45}/> */}
     }
   }
   // Must equal or less than borrowETH
-  const payBackETH = async()=> 
-  {
-    if (CTB)
-    {
-      CTB.methods.getDepositCTB(
-      
-        // ,(0.01*1.2*demicals).toString()
-        )
-        .send(
-          {from:account,
-            // Match with borrowETH
-            value:( 0.001 *demicals).toString()
-         
-        }
-          )
-    }
-  }
+  // paybackETH function
 
 
   const icoCTB = async()=> {
@@ -767,7 +804,7 @@ class="inputField" width={0.45}/> */}
         depositedCTB={depositedCTB}
         depositedETH={depositedETH}
         // borrowETH={borrowETH}
-        payBackETH={payBackETH}
+        // payBackETH={payBackETH}
         getClaimedReward={getClaimedReward}
         // withdrawlETH={withdrawlETH}
         account={account}

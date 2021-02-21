@@ -1,0 +1,8 @@
+  onChange={(e) => setDepositState({
+    ...depositState,
+    depositAmt: e.target.value
+    
+  })}
+  value={depositState.depositAmt}
+
+  for changing depositAmt to execut function
