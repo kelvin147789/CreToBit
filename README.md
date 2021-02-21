@@ -78,7 +78,7 @@ Example:
 Expected purchase: 100 CTB = [Total] , 1%[Total] = 1 CTB
 
 ​
-Initial: 100%[Total] to protocol
+Initial: 100%[Total] Asset (ETH/BNB) to protocol
 
 
 ​
