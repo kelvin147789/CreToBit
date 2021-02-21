@@ -6,8 +6,15 @@ import { MetaMaskButton,Flex, Box, EthAddress,Loader,Select,Field,Input, Icon} f
 import creToBitIcon from './Media/logo.png';
 import {HashRouter,Route, Switch,Link} from "react-router-dom";
 import decentralized from './Media/decentralize.svg';
+
+
+
+
  
 import Web3 from 'web3';
+
+var BigNumber = require('big-number');
+
 
 function App() {
 
@@ -23,7 +30,14 @@ function App() {
   const [currentNetworkID,setcurrentNetworkID] = useState();
   const [accounts,setAccounts] = useState();
   const [Factor,setFactor] = useState();
+
+
   
+  
+
+
+
+
 
 
   // * create function to decide asset symbol 
@@ -38,10 +52,6 @@ function App() {
   
 
 
-  const handleChange = ()=> {
-    console.log("working")
-
-  }
 
 
   const Gov = (props)=> {
@@ -133,7 +143,34 @@ function App() {
     )
   }
 
-  const App = (props) => {return (
+  const App = (props) => {
+
+    
+
+    const [borrowValue,setborrowValue] = useState("")
+
+   const handleChange =  async(e) => {
+    window.web3 = new Web3(window.web3.currentProvider);
+    const web3js = await window.web3;
+    if (web3js)
+    { console.log((e.target.value).toString())
+      const value = (e.target.value)*props.demicals;
+      console.log(value);
+      let abc = await web3js.utils.fromWei((value).toString(),'ether')
+      setborrowValue(JSON.stringify(abc))
+      console.log(abc)
+      
+  }
+  
+   
+  
+
+   }
+
+    
+
+   
+    return (
     <div class="homePageTitle">
     <h2>App Dashboard </h2>
 
@@ -144,6 +181,10 @@ function App() {
     <div class="ctbBalances-2">
     You have <span class="borrowText">{CTBbalance/demicals}</span>CTB to <span class="borrowText-1">borrow</span>
     </div>
+
+    {/* <div>
+      HERE:  {borrowValue} {}
+    </div> */}
 
     <div class="ctbBalances-1">
     You need <span class="payBackText">  {(props.depositedCTB/demicals).toFixed(4) }</span>{currentSymbol} to <span class="payBackText-1">PAYBACK</span>
@@ -156,13 +197,24 @@ function App() {
 
 
     <div>
+     
    <div>
    <Input type="number" required={true} placeholder={"CTB"} 
    class="inputField" width={0.45}
-   onChange={handleChange}
+  //  onChange={this.onTrigger}
+  // onChange= {handleChange}
+  onChange={handleChange}
+  
    />
    </div>
-  <button class="button1" onClick={props.borrowETH}>Borrow</button>
+   {/* Borrow Button */}
+  <button class="button1" onClick={props.borrowETH} type="submit">Borrow</button>
+
+
+
+
+
+
   <div>
       
      <span class="borrowText"><b>
@@ -230,16 +282,17 @@ function App() {
 <div>
 <Input type="number" required={true} placeholder={"CTB"} 
 class="inputField" width={0.45}
-onChange={handleChange}
+
 />
 </div>
-<button class="button1" onClick={props.borrowETH}>Initial CTB</button>
+<button class="button3" onClick={props.sendETH}>Initial CTB</button>
 <div>
   
- <span class="borrowText"><b>
+ <span class="payBackText"><b>
  {CTBbalance/demicals}
    </b></span> 
- CTB 
+   {currentSymbol}
+
 
 <div class="spacingTopBottom">
 
@@ -248,40 +301,40 @@ onChange={handleChange}
 
   </div>
 <div>  
-<span class="payBackText"><b>
-{(CTBbalance/demicals * 0.95).toFixed(4)}
+<span class="initialText"><b>
+{(CTBbalance/demicals * 0.9).toFixed(4)}
   </b></span> 
-  {currentSymbol}
+  CTB 
   </div> 
 </div>
 </div>
 
 <div>
 <div class="">
-<Input type="number" required={true} placeholder={currentSymbol} 
-class="inputField" width={0.45}/>
+{/* <Input type="number" required={true} placeholder={currentSymbol} 
+class="inputField" width={0.45}/> */}
 </div>
 
 {/* <button class="button2" onClick={props.sendETH}>SEND </button> */}
 
-<button class="button2" onClick={props.payBackETH}>Reward </button>
+<button class="rewardbutton2" onClick={props.payBackETH}>Reward </button>
 
 
 <div>
  
-<span class="payBackText"><b>
+<span class="rewardText"><b>
 
   {/* Get depositedCTB[msg.sender] for this  */}
 {(depositedCTB/demicals).toFixed(4)}
   </b></span> 
 {currentSymbol}
 </div>
-<div class="spacingTopBottom">▼</div>
+
 <div>  
 <span class="borrowText"><b>
-{(depositedCTB/demicals ).toFixed(4)}
+
 </b></span> 
-CTB</div>
+</div>
 </div>
 
 
@@ -382,6 +435,25 @@ CTB</div>
   }
 
 
+  const borrowETH = (borrowValue)=> 
+  {
+    if (CTB)
+    {
+
+      const web3 =  window.web3;
+      
+      CTB.methods.borrowETH(
+
+        account,
+        (web3.utils.toBN(10000000000000000).toString())
+        )
+        .send(
+          {from:account}
+          )
+    }
+  }
+
+
   const getBalanceOfCTB = async()=> {
 
     if (CTB) {
@@ -408,17 +480,7 @@ CTB</div>
     console.log("props working ")
   }
 
-  const borrowETH = async()=> 
-  {
-    if (CTB)
-    {
-      CTB.methods.borrowETH(
-        account,(0.001*demicals).toString())
-        .send(
-          {from:account}
-          )
-    }
-  }
+  
 
   const sendETH = async()=> {
     if (window.web3)
@@ -462,7 +524,7 @@ CTB</div>
         .send(
           {from:account,
             // Match with borrowETH
-            value:(0.001*demicals).toString()
+            value:( 0.001 *demicals).toString()
          
         }
           )
@@ -645,7 +707,7 @@ CTB</div>
        
          
          <div>
-          <a href="#" target="_blank">
+          <a href="https://cretobit.gitbook.io/cretobit" target="_blank">
          <h2 className="balance">Docs</h2>
          </a>
          </div>
@@ -694,6 +756,10 @@ CTB</div>
         // withdrawlETH={withdrawlETH}
         account={account}
         holderIncentive={holderIncentive}
+        demicals={demicals}
+   
+        
+
         
         />
 
