@@ -53,6 +53,7 @@ User would payback because of reward for each token , when the asset in contract
 
 Borrow,Payback,Initial and Reward
 ​
+
 The ultimate goal of CreToBit is for providing fully decentralized banking server for user without concerning too much about opportunity cost.And provide opportunity for user in need.
 
 ​

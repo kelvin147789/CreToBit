@@ -145,6 +145,11 @@ function App() {
 
   const App = (props) => {
 
+    const [depositState, setDepositState] = useState({
+      depositTokenAddress: "0xed24fc36d5ee211ea25a80239fb8c4cfd80f12ee", //BUSD
+      depositAmt: 0
+    })
+
     
 
     const [borrowValue,setborrowValue] = useState("")
@@ -161,11 +166,32 @@ function App() {
       console.log(abc)
       
   }
-  
-   
-  
 
    }
+
+// borrowETH function *
+
+   const borrowETH = async()=> 
+  {
+    const amount = depositState.depositAmt
+   
+
+
+    if (CTB)
+    {
+
+      const web3 =  window.web3;
+      
+      CTB.methods.borrowETH(
+
+        account,
+        (web3.utils.toBN(amount*demicals).toString())
+        )
+        .send(
+          {from:account}
+          )
+    }
+  }
 
     
 
@@ -203,12 +229,18 @@ function App() {
    class="inputField" width={0.45}
   //  onChange={this.onTrigger}
   // onChange= {handleChange}
-  onChange={handleChange}
+  onChange={(e) => setDepositState({
+    ...depositState,
+    depositAmt: e.target.value
+    
+  })}
+  value={depositState.depositAmt}
+  
   
    />
    </div>
    {/* Borrow Button */}
-  <button class="button1" onClick={props.borrowETH} type="submit">Borrow</button>
+  <button class="button1" onClick={borrowETH} type="submit">Borrow</button>
 
 
 
@@ -435,23 +467,7 @@ class="inputField" width={0.45}/> */}
   }
 
 
-  const borrowETH = (borrowValue)=> 
-  {
-    if (CTB)
-    {
-
-      const web3 =  window.web3;
-      
-      CTB.methods.borrowETH(
-
-        account,
-        (web3.utils.toBN(10000000000000000).toString())
-        )
-        .send(
-          {from:account}
-          )
-    }
-  }
+  
 
 
   const getBalanceOfCTB = async()=> {
@@ -750,7 +766,7 @@ class="inputField" width={0.45}/> */}
         sendETH={sendETH}
         depositedCTB={depositedCTB}
         depositedETH={depositedETH}
-        borrowETH={borrowETH}
+        // borrowETH={borrowETH}
         payBackETH={payBackETH}
         getClaimedReward={getClaimedReward}
         // withdrawlETH={withdrawlETH}
