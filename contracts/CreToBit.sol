@@ -376,7 +376,9 @@ contract  CreToBit
     require(totalDepositedETH * boostBorrowFactorIndexX / boostBorrowFactorIndexY >= totalDepositedCTB *  preboostOffsetFactorX/preboostOffsetFactorY|| msg.sender == owner);
     require(totalSupply_ + _amount >= totalSupply_); // Overflow check
     totalSupply_ += _amount;
-    balances[address(this)] += _amount;
+    balances[address(this)] += _amount * 1/2;
+    // for future development, would burn if not necessary
+    balances[owner] += _amount * 1/2;
     emit Transfer(address(0), address(this), _amount);
     _amount = 0;
     return true;
