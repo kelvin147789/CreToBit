@@ -14,6 +14,7 @@ contract  CreToBit
  event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
 
   address public owner;
+  uint256 public ownerTimeLock;
   string public name = "CreToBit";
   string public constant symbol = "CTB";
   uint256 public constant decimals = 18;
@@ -90,20 +91,32 @@ contract  CreToBit
       owner = msg.sender;
     //   if revert in migrate , see if this enough for first transfer
       balances[msg.sender] = 1000000000000000000;
-      
-      
-      
+
       
   }
+  
 
   function ableToClaimAmount() public view returns (uint256)
   {
       return ableToClaim[msg.sender];
   }
 
+  function updateOwnerTimeLock(uint256 _amount) public {
+      require(msg.sender == owner,"only owner can lock owner LOL");
+      require(block.timestamp >= ownerTimeLock,"Not cool to forever lock owner");
+      ownerTimeLock = block.timestamp + _amount;
+  }
+
+
+  function checkOwnerTimeLock() public view returns(bool)
+  {
+      require(block.timestamp > ownerTimeLock, "Owner not able to execute yet");
+      return true;
+  }
+
 
   function holderIncentive(address payable _to) public payable  returns(uint256){
-
+    
     require(block.timestamp > nextRewardClaim[msg.sender]);
     nextRewardClaim[msg.sender] += 3 minutes;
     uint256 rewards = totalETH() - balanceOf(address(this)) ;
@@ -146,52 +159,68 @@ contract  CreToBit
       return depositedETH[msg.sender];
   }
 
-  function icoCTB(uint256 _amount) payable public {
-    //   require(!isIcoEnd);
-    uint256 ableToBuy = allowance(address(this),msg.sender);
-      require(_amount <= ableToBuy, "Not enough allowance");
+//   function icoCTB(uint256 _amount) payable public {
+//     //   require(!isIcoEnd);
+//     uint256 ableToBuy = allowance(address(this),msg.sender);
+//       require(_amount <= ableToBuy, "Not enough allowance");
       
-      depositedCTB[msg.sender] += _amount;
-      totalDepositedCTB += _amount;
-      uint256 contractBalance = CreToBit.balanceOf(address(this));
-    //   require(amountToBuy > 0 && amountToBuy <= contractBalance, "You need to send ether or ico end");
-      if (contractBalance > 500 * decimals)
-      {
-          transferFrom(address(this),msg.sender, _amount);
-      }
+//       depositedCTB[msg.sender] += _amount;
+//       totalDepositedCTB += _amount;
+//       uint256 contractBalance = CreToBit.balanceOf(address(this));
+//     //   require(amountToBuy > 0 && amountToBuy <= contractBalance, "You need to send ether or ico end");
+//       if (contractBalance > 500 * decimals)
+//       {
+//           transferFrom(address(this),msg.sender, _amount);
+//       }
 
-      else {
-          transferFrom(address(this),msg.sender, _amount * icoLateRateX/icoLateRateY );
-      }
+//       else {
+//           transferFrom(address(this),msg.sender, _amount * icoLateRateX/icoLateRateY );
+//       }
 
       
-      _amount = 0;
-      totalDepositedCTB -= _amount;
-      depositedCTB[msg.sender] =0;
+//       _amount = 0;
+//       totalDepositedCTB -= _amount;
+//       depositedCTB[msg.sender] =0;
 
-  }
+//   }
 
   function makeIcoEnd() public {
+      require(checkOwnerTimeLock());
       require(msg.sender == owner);
       isIcoEnd = true;
   }
 
   function icoBurn() public  {
+      require(checkOwnerTimeLock());
       require(msg.sender == owner || block.timestamp > icoEnd);
       uint256 burnTokenAmount = balances[address(this)];
       totalSupply_ = totalSupply_ -= burnTokenAmount;
-      emit Burn (address(this),burnTokenAmount);
-      emit Transfer(address(this),address(0),burnTokenAmount);
+      burnICO();  
       isIcoEnd = true;
+      
 
   }
 
  
 
   function burnToken(uint256 _amount) public {
+      require(checkOwnerTimeLock());
       require(msg.sender == owner);
-      emit Burn (msg.sender,_amount);
-      emit Transfer(msg.sender, address(0), _amount);
+      allowed[address(this)][address(0)] = _amount;
+      transferFrom(address(this), address(0), _amount);
+      emit Burn(msg.sender,_amount);
+      _amount = 0;
+  }
+
+  function burnICO() public {
+      require(checkOwnerTimeLock());
+      uint256 contractBalance = balanceOf(address(this));
+    //   require(msg.sender == owner || block.timestamp > icoEnd);
+      allowed[address(this)][msg.sender] = contractBalance;
+      transferFrom(address(this), address(0), contractBalance);
+      contractBalance = 0;
+
+
   }
 
   function totalETH() public view returns (uint256)
@@ -271,7 +300,7 @@ contract  CreToBit
     //   msg.sender.transfer(_amount);
       transferFrom(address(this), msg.sender, _amount);
       _amount = 0;
-      
+
   }
 
   
@@ -306,6 +335,7 @@ contract  CreToBit
   
 
   function adjustDebitFactor(uint256 _debitX,uint256 _debitY) public payable returns (uint256){
+      require(checkOwnerTimeLock());
       require(msg.sender == owner || balances[msg.sender] >= balances[address(this)]);
       borrowX = _debitX;
       borrowY = _debitY;
@@ -313,6 +343,7 @@ contract  CreToBit
   }
 
   function adjustCrebitFactor(uint256 _payBackX,uint256 _payBackY) public payable returns (uint256){
+      require(checkOwnerTimeLock());
       require( msg.sender == owner || balances[msg.sender] >= balances[address(this)]);
       payBackX = _payBackX;
       payBackY = _payBackY;
@@ -320,6 +351,7 @@ contract  CreToBit
   }
 
   function governanceMint() public returns (uint256){
+      require(checkOwnerTimeLock());
       require(totalDepositedETH * boostBorrowFactorIndexX/boostBorrowFactorIndexY >= totalDepositedCTB *  preboostOffsetFactorX/preboostOffsetFactorY || msg.sender == owner);
       mint(totalSupply());
     //   Booster get 0.5% incentive of totalSupply,to increase autonomy

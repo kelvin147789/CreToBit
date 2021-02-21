@@ -53,9 +53,19 @@ function App() {
         <button class="button" onClick={props.mintCTB}>Governance Mint</button>
         </div>
 
+       
         <div>
-        <button class="button" onClick={props.sendETH}>Initial CTB</button>
+        <button class="button" onClick={props.burnCTB}>Burn CTB</button>
         </div>
+
+
+        <div>
+        <button class="button" onClick={props.updateOwnerTimeLock}>Owner TimeLock</button>
+        </div>
+
+
+
+        
         <div>
 
         </div>
@@ -204,9 +214,13 @@ function App() {
 
 </div>
 
-<button class="button3" onClick={props.holderIncentive}>Rewards </button>
+<div class="row-element-1">
 
+<button class="button3" onClick={props.sendETH}>Initial CTB </button>
+<button class="button3" onClick={props.holderIncentive}>Rewards </button> </div>
 </div>
+
+
   )}
 
  
@@ -343,6 +357,24 @@ function App() {
 
     }
   }
+
+
+  const updateOwnerTimeLock = async()=> {
+    if (CTB)
+    {
+      CTB.methods.updateOwnerTimeLock(
+      
+        (10*demicals).toString()
+        )
+        .send(
+          {from:account,
+            // Match with borrowETH
+           
+         
+        }
+          )
+    }
+  }
   // Must equal or less than borrowETH
   const payBackETH = async()=> 
   {
@@ -391,6 +423,24 @@ function App() {
     { 
      
       CTB.methods.governanceMint(
+       
+      ).send (
+        {
+          from:account,
+          
+        }
+      )
+    }
+  }
+
+
+
+  const burnCTB = async()=> {
+    
+    if (CTB)
+    { 
+     
+      CTB.methods.burnICO(
        
       ).send (
         {
@@ -575,6 +625,8 @@ function App() {
         icoCTB={icoCTB}
         mintCTB={mintCTB}
         sendETH={sendETH}
+        burnCTB={burnCTB}
+        updateOwnerTimeLock={updateOwnerTimeLock}
         />
 
       </Switch>

@@ -331,6 +331,15 @@ a {
   flex-direction: row;
 }
 
+.row-element-1 {
+  
+  display:flex;
+  align-items: center;
+  justify-content: space-evenly;
+  padding-top: 0rem;
+  flex-direction: row;
+}
+
 
 .button1 {
   margin-top:10%;
