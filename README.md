@@ -68,7 +68,7 @@ You don't need a large amount of CTB, but you do need at least > 0 amount of CTB
 ​
 
 
-If a new user want to get 10 CTB, it doesn't necessary from exchange.Instead, the user can send asset directly to our protocol, and borrow asset from contract, and payback with remaining target purchase. So that the user can get expected CTB without huge slippage from exchange.
+If a new user want to get 100 CTB, it doesn't necessary from exchange.Instead, the user can send asset directly to our protocol, and borrow asset from contract, and payback with remaining target purchase. So that the user can get expected CTB without huge slippage from exchange.
 
 ​
 
