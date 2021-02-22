@@ -70,7 +70,8 @@ function App() {
   const Gov = (props)=> {
     return (
       <div>
-        CTB Governance
+        <h2>   CTB Governance</h2>
+     
 
         <div>
         <button class="button" onClick={props.mintCTB}>Governance Mint</button>
