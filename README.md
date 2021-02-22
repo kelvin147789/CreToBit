@@ -34,14 +34,15 @@ https://testnet.bscscan.com/address/0x793b823f6dfc4c897efd99651afb2e9ce87bf3d0
 
 
 
-Welcome to CreToBit
+# Welcome to CreToBit 🔆
 
 Decentralized Bank Protocol
 
-Proof of Credit (PoC)
+# Proof of Credit (PoC)
 
 What is Proof of Credit ?
 
+ 
  
 
 In DeFi ecosystem, there are serval economic , right now most of them is Proof of Stake (POS) or Proof of Work (POW) . Nevertheless in most of time , it only benefits early adopter , and make investor in after to suffer from price dropping and time-consuming to recover.
