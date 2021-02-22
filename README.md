@@ -4,10 +4,15 @@
 https://cretobit.on.fleek.co
 
 
-DEMO:
+# DEMO:
 
 https://www.youtube.com/watch?v=OOJRhKDol0M
 
+
+# Smart Contract
+
+BscScan 
+https://testnet.bscscan.com/address/0x793b823f6dfc4c897efd99651afb2e9ce87bf3d0
 
 
 
