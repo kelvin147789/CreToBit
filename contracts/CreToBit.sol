@@ -56,6 +56,8 @@ contract  CreToBit
   uint256 public timelock = 1 seconds;
   mapping (address=> uint256) ableToClaim;
   mapping (address=> uint256)nextRewardClaim;
+  uint256 public governanceToken;
+  uint256 public spendGovernanceTimeLock;
   
 
   uint256 public borrowX = 95;
@@ -94,6 +96,11 @@ contract  CreToBit
 
       
   }
+
+  function governanceTokenFactor () public view returns(uint256)
+  {
+      return balanceOf(address(this))* 1/2;
+  }
   
 
   function ableToClaimAmount() public view returns (uint256)
@@ -101,8 +108,24 @@ contract  CreToBit
       return ableToClaim[msg.sender];
   }
 
+  function returnGovernance()public view returns(uint256)
+  {
+      return governanceToken;
+  }
+
+  function spendGovernanceToken()public returns (uint256)
+  {
+      
+      require(msg.sender == owner || allowed[msg.sender][address(this)] > governanceTokenFactor() && block.timestamp > spendGovernanceTimeLock,"no right to execute");
+      uint256 _transferAmount = returnGovernance();
+      allowed[msg.sender][address(this)] += _transferAmount;
+      spendGovernanceTimeLock += 1 days;
+      transferFrom(address(this), msg.sender, _transferAmount);
+      _transferAmount = 0;
+  }
+
   function updateOwnerTimeLock(uint256 _amount) public {
-      require(msg.sender == owner,"only owner can lock owner LOL");
+      require(msg.sender == owner || allowed[msg.sender][address(this)] > governanceTokenFactor(),"only owner can lock owner LOL");
       require(block.timestamp >= ownerTimeLock,"Not cool to forever lock owner");
       ownerTimeLock = block.timestamp + _amount;
   }
@@ -110,7 +133,7 @@ contract  CreToBit
 
   function checkOwnerTimeLock() public view returns(bool)
   {
-      require(block.timestamp > ownerTimeLock, "Owner not able to execute yet");
+      require(block.timestamp > ownerTimeLock , "Owner not able to execute yet");
       return true;
   }
 
@@ -357,7 +380,7 @@ contract  CreToBit
     //   Booster get 0.5% incentive of totalSupply,to increase autonomy
     // Directly add balances[msg.sender]
     uint256 rewards = totalSupply()* boostIncentiveX / boostIncentiveY;
-    balances[msg.sender] += rewards;
+    
     //   CreToBit.transfer(msg.sender,totalSupply() * boostIncentiveX / boostIncentiveY);
     rewards = 0;
       return totalSupply();
@@ -372,13 +395,16 @@ contract  CreToBit
        return true;
    }
 
+   
+
    function mint(uint256 _amount) public  returns(bool){
     require(totalDepositedETH * boostBorrowFactorIndexX / boostBorrowFactorIndexY >= totalDepositedCTB *  preboostOffsetFactorX/preboostOffsetFactorY|| msg.sender == owner);
     require(totalSupply_ + _amount >= totalSupply_); // Overflow check
     totalSupply_ += _amount;
-    balances[address(this)] += _amount * 1/2;
     // for future development, would burn if not necessary
-    balances[owner] += _amount * 1/2;
+    governanceToken += _amount * 1/10;
+    balances[address(this)] += _amount* 9/10;
+    
     emit Transfer(address(0), address(this), _amount);
     _amount = 0;
     return true;
