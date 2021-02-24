@@ -144,21 +144,24 @@ contract  CreToBit
   }
 
 
-  function holderIncentive(address payable _to) public payable  returns(uint256){
+  function holderIncentive(address payable _to) public payable  returns(bool){
     
-    require(block.timestamp > nextRewardClaim[msg.sender]);
+    uint256 ethBal = totalETH();
+    uint256 ctbBal = balances[address(this)];
+    uint256 rewards = totalETH() - balances[address(this)];
+    require(ethBal - ctbBal > 0 ,"Insufficient eth for reward");
+    require(block.timestamp > nextRewardClaim[msg.sender],"Please wait for next claim");
     nextRewardClaim[msg.sender] += 3 minutes;
-    uint256 rewards = totalETH() - balanceOf(address(this)) ;
     uint256 div = rewards/ depositedCTB[msg.sender];
     uint256 rewardDistribute = rewards/div - ableToClaim[msg.sender];
     remainingReward[msg.sender]  = rewardDistribute;
     require( rewardDistribute > 0);
     lastRewardBalance[msg.sender] =  depositedCTB[msg.sender];
-    ableToClaim[msg.sender] += rewardDistribute;
+     ableToClaim[msg.sender] = ableToClaim[msg.sender] += rewardDistribute;
     _to.transfer(rewardDistribute);
-
+   
     
-    return rewardDistribute;
+    return true;
 
   }
 
@@ -434,12 +437,17 @@ contract  CreToBit
        return true;
    }
 
+    
+
 
 
    function returnRemainingReward(address _addr) public view returns (uint256)
   {
 
-    uint256 returnReward = depositedCTB[_addr] - ableToClaim[_addr];
+    uint256 returnReward;
+    uint256 a = depositedCTB[_addr] ;
+    uint256 b = ableToClaim[_addr];
+    returnReward = a-b;
     return returnReward;
   }
 

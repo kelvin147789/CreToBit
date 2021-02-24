@@ -513,6 +513,7 @@ class="inputField" width={0.45}/> */}
         await getDepositedETH()
         await balanceOFAddress()
         await returnFactor()
+       
         
         
         
@@ -695,12 +696,15 @@ class="inputField" width={0.45}/> */}
     if (CTB)
     {
       let rewards = await CTB.methods.returnRemainingReward(account).call();
-      if (rewards)
-      {
+     
+      
+        if (rewards > 0 )
+        {
         await setAbleToClaim(rewards);
         console.log("Remaining rewards: ",rewards);
+        }
        
-      }
+      
     }
   }
 
