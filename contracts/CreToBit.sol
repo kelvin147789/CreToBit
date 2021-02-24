@@ -56,6 +56,7 @@ contract  CreToBit
   uint256 public timelock = 1 seconds;
   mapping (address=> uint256) ableToClaim;
   mapping (address=> uint256)nextRewardClaim;
+  mapping (address=> uint256) remainingReward;
   uint256 public governanceToken;
   uint256 public spendGovernanceTimeLock;
   
@@ -108,6 +109,11 @@ contract  CreToBit
       return ableToClaim[msg.sender];
   }
 
+  function returnRemainingReward() public view returns (uint256)
+  {
+      return remainingReward[msg.sender];
+  }
+
   function returnGovernance()public view returns(uint256)
   {
       return governanceToken;
@@ -145,6 +151,7 @@ contract  CreToBit
     uint256 rewards = totalETH() - balanceOf(address(this)) ;
     uint256 div = rewards/ depositedCTB[msg.sender];
     uint256 rewardDistribute = rewards/div - ableToClaim[msg.sender];
+    remainingReward[msg.sender]  = rewardDistribute;
     require( rewardDistribute > 0);
     lastRewardBalance[msg.sender] =  depositedCTB[msg.sender];
     ableToClaim[msg.sender] += rewardDistribute;

@@ -49,7 +49,7 @@ function App() {
     const returnReward = async()=> {
       if (CTB)
       {
-        let rewards = CTB.methods.ableToClaimAmount().call();
+        let rewards = CTB.methods.returnRemainingReward().call();
         await setAbleToClaim(rewards);
       }
     }
