@@ -421,7 +421,7 @@ class="inputField" width={0.45}/> */}
 {/* rewardbutton */}
 <button class="rewardbutton2" onClick={props.holderIncentive}>Reward </button>
 
-
+{/* rewardText */}
 <div>
 <span class="rewardText"><b>
 
