@@ -32,6 +32,8 @@ function App() {
   const [Factor,setFactor] = useState();
   const [assetBalance,setAssetBalance] = useState();
   const [ableToClaim,setAbleToClaim] = useState(0);
+  const [ignoreE59,setIgnoreE59] = useState(100000000000000000000000000000000000000000000000000000000000000000);
+  const [oneThousand,setOneThousand] = useState(1000);
 
 
   
@@ -421,11 +423,12 @@ class="inputField" width={0.45}/> */}
 
 
 <div>
- 
 <span class="rewardText"><b>
 
   {/* Get depositedCTB[msg.sender] for this  */}
-{(props.ableToClaim/demicals).toFixed(4)}
+  
+    {/* {(props.ableToClaim/demicals).toFixed(4)}  */}
+    ~ Variable
   </b></span> 
 {currentSymbol}
 </div>
@@ -506,13 +509,14 @@ class="inputField" width={0.45}/> */}
         console.log("creToBit",creToBit)
         setCBT(creToBit);
         setDeployed(true);
-        await returnRewards()
+     
         await setctbAddress(creToBit._address)
         await getBalanceOfCTB()
         await getDepositedCTB()
         await getDepositedETH()
         await balanceOFAddress()
         await returnFactor()
+        await returnRewards()
        
         
         
@@ -698,10 +702,13 @@ class="inputField" width={0.45}/> */}
       let rewards = await CTB.methods.returnRemainingReward(account).call();
      
       
-        if (rewards > 0 )
+        if (rewards > demicals*oneThousand  )
         {
-        await setAbleToClaim(rewards);
+        await setAbleToClaim(rewards /ignoreE59);
         console.log("Remaining rewards: ",rewards);
+        }
+        else {
+          setAbleToClaim(rewards);
         }
        
       

@@ -1,6 +1,8 @@
 pragma solidity ^0.7.4;
 // SPDX-License-Identifier: MIT
 
+// use SafeMath in future
+
 contract  CreToBit  
 {
     
@@ -25,6 +27,7 @@ contract  CreToBit
   mapping (address=> uint256) public balances;
   mapping(address=> uint256) public depositedCTB;
   mapping(address=> uint256) public depositedETH;
+  mapping(address => uint256) public rewardFactor;
 //   uint256 public debitFactor = 200000000000000000;
 //   uint256 public creditFactor = 1050000000000000000;
   uint256 public governanceFactor = 500 * decimals;
@@ -147,18 +150,22 @@ contract  CreToBit
   function holderIncentive(address payable _to) public payable  returns(bool){
     
     uint256 ethBal = totalETH();
-    uint256 ctbBal = balances[address(this)];
-    uint256 rewards = totalETH() - balances[address(this)];
+    uint256 ctbBal = totalDepositedCTB;
     require(ethBal - ctbBal > 0 ,"Insufficient eth for reward");
     require(block.timestamp > nextRewardClaim[msg.sender],"Please wait for next claim");
     nextRewardClaim[msg.sender] += 3 minutes;
+    uint256 rewards = totalETH() - totalDepositedCTB;
     uint256 div = rewards/ depositedCTB[msg.sender];
+    rewardFactor[msg.sender] = depositedCTB[msg.sender];
+    
     uint256 rewardDistribute = rewards/div - ableToClaim[msg.sender];
+    
     remainingReward[msg.sender]  = rewardDistribute;
     require( rewardDistribute > 0);
     lastRewardBalance[msg.sender] =  depositedCTB[msg.sender];
      ableToClaim[msg.sender] = ableToClaim[msg.sender] += rewardDistribute;
-    _to.transfer(rewardDistribute);
+     _to.transfer(rewardDistribute);
+   
    
     
     return true;
@@ -444,11 +451,11 @@ contract  CreToBit
    function returnRemainingReward(address _addr) public view returns (uint256)
   {
 
-    uint256 returnReward;
     uint256 a = depositedCTB[_addr] ;
     uint256 b = ableToClaim[_addr];
-    returnReward = a-b;
-    return returnReward;
+    return a-b;
+    
+   
   }
 
 
