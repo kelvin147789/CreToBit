@@ -1,4 +1,4 @@
-pragma solidity ^0.7.6;
+pragma solidity ^0.7.4;
 // SPDX-License-Identifier: MIT
 
 contract  CreToBit  
@@ -104,22 +104,19 @@ contract  CreToBit
   }
   
 
-  function ableToClaimAmount() public view returns (uint256)
+  function ableToClaimAmount(address _addr) public view returns (uint256)
   {
-      return ableToClaim[msg.sender];
+      return ableToClaim[_addr];
   }
 
-  function returnRemainingReward() public view returns (uint256)
-  {
-      return remainingReward[msg.sender];
-  }
+  
 
   function returnGovernance()public view returns(uint256)
   {
       return governanceToken;
   }
 
-  function spendGovernanceToken()public returns (uint256)
+  function spendGovernanceToken()public returns (bool)
   {
       
       require(msg.sender == owner || allowed[msg.sender][address(this)] > governanceTokenFactor() && block.timestamp > spendGovernanceTimeLock,"no right to execute");
@@ -128,6 +125,9 @@ contract  CreToBit
       spendGovernanceTimeLock += 1 days;
       transferFrom(address(this), msg.sender, _transferAmount);
       _transferAmount = 0;
+       return true;
+
+      
   }
 
   function updateOwnerTimeLock(uint256 _amount) public {
@@ -387,8 +387,7 @@ contract  CreToBit
     //   Booster get 0.5% incentive of totalSupply,to increase autonomy
     // Directly add balances[msg.sender]
     uint256 rewards = totalSupply()* boostIncentiveX / boostIncentiveY;
-    
-    //   CreToBit.transfer(msg.sender,totalSupply() * boostIncentiveX / boostIncentiveY);
+    // CreToBit.transfer(msg.sender,rewards);
     rewards = 0;
       return totalSupply();
   }
@@ -434,7 +433,20 @@ contract  CreToBit
        emit Transfer(_owner, buyer, numTokens);
        return true;
    }
+
+
+
+   function returnRemainingReward(address _addr) public view returns (uint256)
+  {
+
+    uint256 returnReward = depositedCTB[_addr] - ableToClaim[_addr];
+    return returnReward;
+  }
+
+
+
 }
+
 
 
 

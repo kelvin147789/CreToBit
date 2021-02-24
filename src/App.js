@@ -46,13 +46,7 @@ function App() {
 
 
     // return reward fun
-    const returnReward = async()=> {
-      if (CTB)
-      {
-        let rewards = CTB.methods.returnRemainingReward().call();
-        await setAbleToClaim(rewards);
-      }
-    }
+  
 
  
   
@@ -431,7 +425,7 @@ class="inputField" width={0.45}/> */}
 <span class="rewardText"><b>
 
   {/* Get depositedCTB[msg.sender] for this  */}
-{(ableToClaim/demicals).toFixed(4)}
+{(props.ableToClaim/demicals).toFixed(4)}
   </b></span> 
 {currentSymbol}
 </div>
@@ -512,13 +506,14 @@ class="inputField" width={0.45}/> */}
         console.log("creToBit",creToBit)
         setCBT(creToBit);
         setDeployed(true);
+        await returnRewards()
         await setctbAddress(creToBit._address)
         await getBalanceOfCTB()
         await getDepositedCTB()
         await getDepositedETH()
         await balanceOFAddress()
         await returnFactor()
-        await returnReward()
+        
         
         
         }
@@ -691,6 +686,21 @@ class="inputField" width={0.45}/> */}
 
       let updatedFactoR = await CTB.methods.returnFactor().call();
       await console.log('Updated factor',updatedFactoR)
+    }
+  }
+
+
+  const returnRewards = async()=> {
+   
+    if (CTB)
+    {
+      let rewards = await CTB.methods.returnRemainingReward(account).call();
+      if (rewards)
+      {
+        await setAbleToClaim(rewards);
+        console.log("Remaining rewards: ",rewards);
+       
+      }
     }
   }
 
