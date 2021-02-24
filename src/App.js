@@ -162,7 +162,6 @@ function App() {
   const App = (props) => {
 
     const [depositState, setDepositState] = useState({
-      
       depositAmt: 0
     })
 
@@ -214,8 +213,11 @@ function App() {
 
   const payBackETH = async()=> 
   {
+
+    const amount = depositState.depositAmt;
     if (CTB)
     {
+      const web3 =  window.web3;
       CTB.methods.getDepositCTB(
       
         // ,(0.01*1.2*demicals).toString()
@@ -223,7 +225,7 @@ function App() {
         .send(
           {from:account,
             // Match with borrowETH
-            value:( 0.001 *demicals).toString()
+            value: (web3.utils.toBN(amount*demicals).toString())
          
         }
           )
