@@ -32,7 +32,7 @@ function App() {
   const [Factor,setFactor] = useState();
   const [assetBalance,setAssetBalance] = useState();
   const [ableToClaim,setAbleToClaim] = useState(0);
-
+  const [ignoreE59,setIgnoreE59] = useState(10000000000000000000000000000000000000000000000000000000000000000)
 
   
   
@@ -219,7 +219,7 @@ function App() {
         .send(
           {from:account,
             // Match with borrowETH
-            value: (web3.utils.toBN(amount*demicals).toString())
+            value: (web3.utils.toBN((amount*demicals).toFixed(0)).toString())
          
         }
           )
@@ -698,10 +698,19 @@ class="inputField" width={0.45}/> */}
       let rewards = await CTB.methods.returnRemainingReward(account).call();
      
       
-        if (rewards > 0 )
+        if (rewards/ignoreE59 > 0.001)
         {
-        await setAbleToClaim(rewards);
+        await setAbleToClaim(
+           rewards/ignoreE59
+          );
         console.log("Remaining rewards: ",rewards);
+        }
+
+        else {
+          await setAbleToClaim(
+            // rewards
+            rewards
+            );
         }
        
       
