@@ -110,6 +110,8 @@ function App() {
   
     <div class="typing-demo">
       Decentralized Bank Protocol.
+
+      
     </div> 
 </div>
    
